@@ -1,0 +1,3 @@
+WASD  -> 移動
+space -> 上がる
+r.ctrl->　下がる
