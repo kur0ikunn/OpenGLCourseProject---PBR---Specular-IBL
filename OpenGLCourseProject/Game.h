@@ -263,5 +263,4 @@ private:
 
 	glm::mat4 vView[3];
 	glm::mat4 testLitView[1];
-
 };
