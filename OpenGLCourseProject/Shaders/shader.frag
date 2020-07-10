@@ -101,7 +101,7 @@ vec3 sampleOffsetDirections[20] = vec3[]
 
 vec2 CalcScreenTexCoord()
 {
-    return gl_FragCoord.xy / vec2(2560, 1440);
+    return gl_FragCoord.xy / vec2(1920, 1080);
 }
 
 float CalcDirectionalShadowFactor(DirectionalLight light)

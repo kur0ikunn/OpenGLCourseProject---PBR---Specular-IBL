@@ -18,6 +18,7 @@ public:
 	bool LoadTextureSRGBA();
 	bool LoadCubeMap(std::vector<std::string> faceLocation);
 	bool LoadCubeMapSRGB(std::vector<std::string> faceLocation);
+	bool LoadTextureHDR();
 
 	bool GenerateNoiseTexture(std::vector<glm::vec3>& noiseData);
 

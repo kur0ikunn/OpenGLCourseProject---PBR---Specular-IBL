@@ -177,6 +177,32 @@ bool Texture::LoadCubeMapSRGB(std::vector<std::string> faceLocation)
 	return true;
 }
 
+bool Texture::LoadTextureHDR()
+{
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
+
+	if (!texData) {
+		printf("Failed ot find HDR TEXTURE: %s\n", fileLocation);
+		return false;
+	}
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	stbi_image_free(texData);
+
+	return true;
+}
+
 bool Texture::GenerateNoiseTexture(std::vector<glm::vec3>& noiseData)
 {
 	glGenTextures(1, &textureID);
