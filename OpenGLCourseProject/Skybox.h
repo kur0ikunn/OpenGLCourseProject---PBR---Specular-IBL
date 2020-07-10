@@ -12,6 +12,7 @@
 
 #include "CommonValues.h"
 
+#include "Equirectangular_to_CubeMap_Framebuffer.h"
 #include "Model_Shader.h"
 #include "Static_Mesh.h"
 
@@ -19,10 +20,11 @@ class Skybox
 {
 public:
 	Skybox();
-
 	Skybox(std::vector<std::string> faceLocation);
 
 	void DrawSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 prevP, glm::mat4 prevV);
+
+	void DrawHDRSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 prevP, glm::mat4 prevV, Equirectangular_to_CubeMap_Framebuffer* envMap);
 	~Skybox();
 
 private:

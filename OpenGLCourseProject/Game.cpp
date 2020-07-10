@@ -31,6 +31,9 @@ void Game::init()
 
 	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 100.0f, 0.2f);
 
+	environmentTexture = Texture("Textures/HDR/newport_loft.hdr");
+	environmentTexture.LoadTextureHDR();
+
 	brickTexture = Texture("Textures/brick.jpg");
 	brickTexture.LoadTextureSRGB();
 	metalDebrisTexture = Texture("Textures/small_metal_debris.jpg");
@@ -136,6 +139,7 @@ void Game::init()
 	anim2.LoadModel("Models/model.dae");
 
 	quad = new Static_Mesh();
+	mesh_cube = new Static_Mesh();
 
 	depth = new Depth_Framebuffer();
 	depth->Init(ScreenWidth, ScreenHeight);
@@ -145,6 +149,9 @@ void Game::init()
 
 	ssaoBlur = new SSAOBlur_Framebuffer();
 	ssaoBlur->Init(ScreenWidth, ScreenHeight);
+
+	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
+	environmentMap->Init(ScreenWidth, ScreenHeight);
 
 	hdr = new HDR_Framebuffer();
 	hdr->Init(ScreenWidth, ScreenHeight);
@@ -182,24 +189,24 @@ void Game::init()
 
 	spotLightCount++;
 
-	std::vector<std::string> skyboxFaces;
-	/*skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");*/
-	skyboxFaces.push_back("Textures/Skybox/barren_rt.jpg");
-	skyboxFaces.push_back("Textures/Skybox/barren_lf.jpg");
-	skyboxFaces.push_back("Textures/Skybox/barren_up.jpg");
-	skyboxFaces.push_back("Textures/Skybox/barren_dn.jpg");
-	skyboxFaces.push_back("Textures/Skybox/barren_bk.jpg");
-	skyboxFaces.push_back("Textures/Skybox/barren_ft.jpg");
+	//std::vector<std::string> skyboxFaces;
+	///*skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
+	//skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
+	//skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
+	//skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
+	//skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
+	//skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");*/
+	//skyboxFaces.push_back("Textures/Skybox/barren_rt.jpg");
+	//skyboxFaces.push_back("Textures/Skybox/barren_lf.jpg");
+	//skyboxFaces.push_back("Textures/Skybox/barren_up.jpg");
+	//skyboxFaces.push_back("Textures/Skybox/barren_dn.jpg");
+	//skyboxFaces.push_back("Textures/Skybox/barren_bk.jpg");
+	//skyboxFaces.push_back("Textures/Skybox/barren_ft.jpg");
 
 
-	skybox = new Skybox(skyboxFaces);
+	skybox = new Skybox();
 
-	skyboxTexture.LoadCubeMapSRGB(skyboxFaces);
+	//skyboxTexture.LoadCubeMapSRGB(skyboxFaces);
 
 	projection = glm::perspective(glm::radians(60.0f), (GLfloat)mainWindow.getBufferWidth() / (GLfloat)mainWindow.getBufferHeight(), 0.1f, 10000.0f);
 
@@ -281,6 +288,7 @@ void Game::update(float fps) {
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
+	//EnvironmentMapPass();
 	RenderPass(projection, camera.calculateViewMatrix(), deltaTime);
 	BlurPass();
 	MotionBlurPass(fps);
@@ -499,6 +507,8 @@ void Game::CreateShaders() {
 
 	ssaoBlurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/ssao_blur_framebuffer.frag");
 
+	environmentMapShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
+
 	Model_Shader* shader1 = new Model_Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
@@ -563,8 +573,13 @@ void Game::RenderTerrain()
 	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformDisplacement, uniformRoughnessMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
-	terrainList[0]->prevMesh = model;
-	
+	terrainList[0]->prevMesh = model;	
+}
+
+void Game::RenderEnvCubeMap()
+{
+	environmentTexture.UseTexture(0);
+	mesh_cube->RenderCube();
 }
 
 void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
@@ -782,7 +797,7 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	anymodel.prevModel = model;
 
 
-	skyboxTexture.UseCubeMap(7);
+	//skyboxTexture.UseCubeMap(7);
 }
 
 void Game::RenderAnimScene(bool shadow, bool depth) {
@@ -839,7 +854,7 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 	anim2.RenderModel();
 	anim2.prevModel = model;
 
-	skyboxTexture.UseCubeMap(7);
+	//skyboxTexture.UseCubeMap(7);
 }
 
 void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light) {
@@ -1016,14 +1031,35 @@ void Game::SSAOBlurPass()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Game::EnvironmentMapPass()
+{
+	environmentMapShader.UseShader();
+	environmentMapShader.SetTexture(1);
+
+	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
+
+	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
+	environmentMap->Write(-1);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		uniformViewEnv = environmentMapShader.GetViewLocation();
+		glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
+		environmentMap->Write(i);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	    environmentMapShader.Validate();
+
+		RenderEnvCubeMap();
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat deltaTime)
 {
 	glViewport(0, 0, hdr->GetWidth(), hdr->GetHeight());
 
 	hdr->Write(); 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//skybox->DrawSkybox(viewMatrix, projectionMatrix, prevProj, prevView);
 
 	terrainShader.UseShader();
 
@@ -1059,6 +1095,17 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	terrainShader.Validate();
 
 	RenderTerrain();
+
+	environmentMapShader.UseShader();
+	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	uniformViewEnv = environmentMapShader.GetViewLocation();
+	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	environmentMapShader.SetTexture(1);
+
+	environmentMapShader.Validate();
+
+	RenderEnvCubeMap();
 
 	shaderList[0].UseShader();
 
@@ -1176,6 +1223,8 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	lowerLight.y -= 0.1f;
 	spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
+	//skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -1287,10 +1336,21 @@ Game::~Game()
 		ssao = nullptr;
 	}
 	
+	if (environmentMap != nullptr) {
+		delete environmentMap;
+		environmentMap = nullptr;
+	}
+
 	if (quad != nullptr) {
 		delete quad;
 		quad = nullptr;
 	}
+
+	if (mesh_cube != nullptr) {
+		delete mesh_cube;
+		mesh_cube = nullptr;
+	}
+
 	if (skybox != nullptr) {
 		delete skybox;
 		skybox = nullptr;

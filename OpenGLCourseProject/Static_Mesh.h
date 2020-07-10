@@ -16,6 +16,7 @@ public:
 	void RenderTessellatedMesh();
 	void RenderInstancedBillboard();
 	void RenderQuad();
+	void RenderCube();
 	~Static_Mesh();
 private:
 	void ClearMesh();

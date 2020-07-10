@@ -26,6 +26,8 @@
     <ClCompile Include="Blur_Shader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Equirectangular_to_CubeMap_Framebuffer.cpp" />
+    <ClCompile Include="Equirectangular_to_CubeMap_Shader.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="HDR_Framebuffer.cpp" />
     <ClCompile Include="HDR_Shader.cpp" />
@@ -71,6 +73,8 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Equirectangular_to_CubeMap_Framebuffer.h" />
+    <ClInclude Include="Equirectangular_to_CubeMap_Shader.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="HDR_Framebuffer.h" />
     <ClInclude Include="HDR_Shader.h" />

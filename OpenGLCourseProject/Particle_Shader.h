@@ -15,10 +15,10 @@ public:
 private:
 	void CompileProgram();
 
-	GLuint uniformCameraRight;
-	GLuint uniformCameraUp;
-	GLuint uniformPos;
-	GLuint uniformSize;
+	GLuint uniformCameraRight= 0;
+	GLuint uniformCameraUp = 0;
+	GLuint uniformPos = 0;
+	GLuint uniformSize = 0;
 
 };
 

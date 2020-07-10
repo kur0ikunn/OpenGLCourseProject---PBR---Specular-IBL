@@ -17,6 +17,7 @@ Texture::Texture (const char* fileLoc) {
 }
 
 bool Texture::LoadTextureA() {
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 	
 	if (!texData) {
@@ -44,6 +45,7 @@ bool Texture::LoadTextureA() {
 
 bool Texture::LoadTextureSRGBA()
 {
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 
 	if (!texData) {
@@ -70,6 +72,7 @@ bool Texture::LoadTextureSRGBA()
 
 bool Texture::LoadTexture()
 {
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 
 	if (!texData) {
@@ -97,6 +100,7 @@ bool Texture::LoadTexture()
 
 bool Texture::LoadTextureSRGB()
 {
+	stbi_set_flip_vertically_on_load(false);
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 
 	if (!texData) {
@@ -123,6 +127,7 @@ bool Texture::LoadTextureSRGB()
 
 bool Texture::LoadCubeMap(std::vector<std::string> faceLocation)
 {
+	stbi_set_flip_vertically_on_load(false);
 	//texture setup
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -151,6 +156,7 @@ bool Texture::LoadCubeMap(std::vector<std::string> faceLocation)
 
 bool Texture::LoadCubeMapSRGB(std::vector<std::string> faceLocation)
 {
+	stbi_set_flip_vertically_on_load(false);
 	//texture setup
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -180,7 +186,7 @@ bool Texture::LoadCubeMapSRGB(std::vector<std::string> faceLocation)
 bool Texture::LoadTextureHDR()
 {
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
+	float* texData = stbi_loadf(fileLocation, &width, &height, &bitDepth, 0);
 
 	if (!texData) {
 		printf("Failed ot find HDR TEXTURE: %s\n", fileLocation);
@@ -188,13 +194,12 @@ bool Texture::LoadTextureHDR()
 	}
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, texData);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -205,6 +210,7 @@ bool Texture::LoadTextureHDR()
 
 bool Texture::GenerateNoiseTexture(std::vector<glm::vec3>& noiseData)
 {
+	stbi_set_flip_vertically_on_load(false);
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 4, 4, 0, GL_RGB, GL_FLOAT, &noiseData[0]);
