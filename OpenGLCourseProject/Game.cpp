@@ -151,7 +151,7 @@ void Game::init()
 	ssaoBlur->Init(ScreenWidth, ScreenHeight);
 
 	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
-	environmentMap->Init(ScreenWidth, ScreenHeight);
+	environmentMap->Init(ScreenWidth, ScreenWidth);
 
 	hdr = new HDR_Framebuffer();
 	hdr->Init(ScreenWidth, ScreenHeight);
@@ -233,7 +233,6 @@ void Game::init()
 		printf("%F \n", vClip.z);
 		terrainShader.SetCascadeEndClipSpace(i, -vClip.z);
 	}
-
 	EnvironmentMapPass();
 }
 
@@ -290,6 +289,7 @@ void Game::update(float fps) {
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
+	//EnvironmentMapPass();
 	RenderPass(projection, camera.calculateViewMatrix(), deltaTime);
 	BlurPass();
 	MotionBlurPass(fps);
@@ -1034,6 +1034,17 @@ void Game::SSAOBlurPass()
 
 void Game::EnvironmentMapPass()
 {
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureViews[6] =
+	{
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))
+	};
+
 	environmentMapShader.UseShader();
 	environmentMapShader.SetTexture(1);
 
@@ -1041,7 +1052,7 @@ void Game::EnvironmentMapPass()
 	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
 
 	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
-	//environmentMap->Write(-1);
+	environmentMap->Write(-1);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		uniformViewEnv = environmentMapShader.GetViewLocation();
@@ -1061,6 +1072,8 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	hdr->Write(); 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap); //should be at the end to prevent overdraw,here becoz of blending issues
 
 	terrainShader.UseShader();
 
@@ -1097,16 +1110,16 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	RenderTerrain();
 
-	//environmentMapShader.UseShader();
-	//uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
-	//uniformViewEnv = environmentMapShader.GetViewLocation();
-	//glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	//glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	//environmentMapShader.SetTexture(1);
+	/*environmentMapShader.UseShader();
+	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	uniformViewEnv = environmentMapShader.GetViewLocation();
+	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	environmentMapShader.SetTexture(1);
 
-	//environmentMapShader.Validate();
+	environmentMapShader.Validate();
 
-	//RenderEnvCubeMap();
+	RenderEnvCubeMap();*/
 
 	shaderList[0].UseShader();
 
@@ -1223,8 +1236,6 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	glm::vec3 lowerLight = camera.getCameraPosition();
 	lowerLight.y -= 0.1f;
 	spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-
-	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

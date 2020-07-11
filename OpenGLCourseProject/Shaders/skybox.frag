@@ -1,6 +1,6 @@
 #version 460
 
-//layout(early_fragment_tests) in;
+layout(early_fragment_tests) in;
 
 
 in vec3 TexCoord;
@@ -15,7 +15,8 @@ uniform samplerCube skybox;
 
 void main()
 {
-	color = texture(skybox, TexCoord);	
+	color = texture(skybox, TexCoord);
+	
 	float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if(brightness>1.0f){
 	BrightColor = vec4(color.rgb,1.0f);
