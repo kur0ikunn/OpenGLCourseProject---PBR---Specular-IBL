@@ -233,6 +233,8 @@ void Game::init()
 		printf("%F \n", vClip.z);
 		terrainShader.SetCascadeEndClipSpace(i, -vClip.z);
 	}
+
+	EnvironmentMapPass();
 }
 
 void Game::update(float fps) {
@@ -288,7 +290,6 @@ void Game::update(float fps) {
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
-	//EnvironmentMapPass();
 	RenderPass(projection, camera.calculateViewMatrix(), deltaTime);
 	BlurPass();
 	MotionBlurPass(fps);
@@ -1040,7 +1041,7 @@ void Game::EnvironmentMapPass()
 	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
 
 	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
-	environmentMap->Write(-1);
+	//environmentMap->Write(-1);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
 		uniformViewEnv = environmentMapShader.GetViewLocation();
@@ -1096,16 +1097,16 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	RenderTerrain();
 
-	environmentMapShader.UseShader();
-	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
-	uniformViewEnv = environmentMapShader.GetViewLocation();
-	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	environmentMapShader.SetTexture(1);
+	//environmentMapShader.UseShader();
+	//uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	//uniformViewEnv = environmentMapShader.GetViewLocation();
+	//glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	//glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	//environmentMapShader.SetTexture(1);
 
-	environmentMapShader.Validate();
+	//environmentMapShader.Validate();
 
-	RenderEnvCubeMap();
+	//RenderEnvCubeMap();
 
 	shaderList[0].UseShader();
 
@@ -1223,7 +1224,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	lowerLight.y -= 0.1f;
 	spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
-	//skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap);
+	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

@@ -35,8 +35,8 @@ bool Equirectangular_to_CubeMap_Framebuffer::Init(GLuint width, GLuint height)
 }
 
 void Equirectangular_to_CubeMap_Framebuffer::Write(int i)
-{	if(i ==-1) glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	else glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, buffer, 0);
+{	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, buffer, 0);
 }
 
 void Equirectangular_to_CubeMap_Framebuffer::Read(GLenum textureUnit)

@@ -121,9 +121,9 @@ void Skybox::DrawHDRSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm
 
 	glm::mat4 prevPV = glm::mat4();
 
-	//glDepthMask(GL_FALSE);
+	glDepthMask(GL_FALSE);
 
-	glDepthFunc(GL_LEQUAL); //so that skybox doesn't render on top
+	//glDepthFunc(GL_LEQUAL); //so that skybox doesn't render on top
 
 	skyShader->UseShader();
 
@@ -139,7 +139,7 @@ void Skybox::DrawHDRSkybox(glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm
 	skyShader->Validate();
 	skyMesh->RenderCube();
 
-	//glDepthMask(GL_TRUE);
+	glDepthMask(GL_TRUE);
 }
 
 Skybox::~Skybox()
