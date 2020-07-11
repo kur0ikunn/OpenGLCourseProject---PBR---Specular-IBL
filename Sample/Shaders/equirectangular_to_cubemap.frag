@@ -1,6 +1,6 @@
 #version 460
 
-//layout(early_fragment_tests) in;
+layout(early_fragment_tests) in;
 
 in vec3 TexCoord;
 layout(location = 0)out vec4 color;

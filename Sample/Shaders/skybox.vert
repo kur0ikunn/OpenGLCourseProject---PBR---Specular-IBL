@@ -15,7 +15,7 @@ void main()
 	TexCoord = pos;
 	vec4 ClipSpacePosition =  Projection * View * vec4(pos, 1.0);	
 	
-	gl_Position = ClipSpacePosition;
+	gl_Position = ClipSpacePosition.xyww;
 	
 	ClipSpacePos = ClipSpacePosition;
 	PrevClipSpacePos = prevPVM * vec4(pos, 1.0);
