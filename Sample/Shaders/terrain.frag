@@ -81,6 +81,7 @@ uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 uniform float CascadeEndClipSpace[NUM_CASCADES];
 uniform DirectionalShadowMaps directionalShadowMaps[NUM_CASCADES];
+uniform samplerCube skybox;
 uniform sampler2D AOMap;
 uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
 
@@ -202,6 +203,13 @@ float GeometrySmith(vec3 N,vec3 V, vec3 L, float roughness)
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
 	return max(F0+(1.0-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
+	//return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+	return max(F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
+	//return F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0);
 }
 
 
@@ -224,7 +232,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
-	vec3 specular = nominator/max(denominator,1.0);  //0.01-has banding issues 
+	vec3 specular = nominator/max(denominator,1.0);  //0.001-has banding issues 
 	
 	vec3 kS = F;
 	vec3 kD = vec3(1.0)-kS;
@@ -328,9 +336,14 @@ void main()
 	finalColor += CalcPointLights();
 	finalColor += CalcSpotLights();
 	
-	//color = texture(theTexture, NewTexCoord);
-	
-	vec3 ambient = vec3(0.03)* albedo* texture(AOMap,CalcScreenTexCoord()).r;
+		 // ambient lighting (we now use IBL as the ambient term)
+    vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	  
+    vec3 irradiance = texture(skybox, N).rgb;
+    vec3 diffuse      = irradiance * albedo;
+    vec3 ambient = (kD * diffuse) * texture(AOMap,CalcScreenTexCoord()).r;
+
 	vec4 texColor = vec4(ambient,1.0)+finalColor;
 	
 	if(texColor.a > 1.0f)

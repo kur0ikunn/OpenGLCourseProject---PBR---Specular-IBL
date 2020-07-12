@@ -32,6 +32,7 @@
     <ClCompile Include="HDR_Framebuffer.cpp" />
     <ClCompile Include="HDR_Shader.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Irradiance_Convolution_Shader.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -79,6 +80,7 @@
     <ClInclude Include="HDR_Framebuffer.h" />
     <ClInclude Include="HDR_Shader.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Irradiance_Convolution_Shader.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Material.h" />

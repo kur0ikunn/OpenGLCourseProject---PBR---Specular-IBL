@@ -147,6 +147,9 @@
     <ClCompile Include="Equirectangular_to_CubeMap_Framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Irradiance_Convolution_Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -279,6 +282,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Equirectangular_to_CubeMap_Framebuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Irradiance_Convolution_Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

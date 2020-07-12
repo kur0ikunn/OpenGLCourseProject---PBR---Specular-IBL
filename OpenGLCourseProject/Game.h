@@ -24,6 +24,7 @@
 #include "SSAO_Shader.h"
 #include "SSAOBlur_Shader.h"
 #include "Equirectangular_to_CubeMap_Shader.h"
+#include "Irradiance_Convolution_Shader.h"
 #include "Model_Shader.h"
 #include "Terrain_Shader.h"
 #include "Billboard_Shader.h"
@@ -86,7 +87,7 @@ private:
 	void RenderBillboardScene();
 	void RenderParticlesScene(GLfloat deltaTime);
 	void RenderTerrain();
-	void RenderEnvCubeMap();
+	void RenderEnvCubeMap(bool is_cubeMap);
 	void RenderScene(glm::mat4 projectionMatrix = glm::mat4(), glm::mat4 viewMatrix = glm::mat4());
 	void RenderAnimScene(bool shadow, bool depth);
 
@@ -96,6 +97,7 @@ private:
 	void DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light);
 	void OmniShadowMapPass(PointLight* light);
 	void EnvironmentMapPass();
+	void IrradianceConvolutionPass();
 	void RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat deltaTime);
 	void MotionBlurPass(float fps);
 	void BlurPass();
@@ -105,6 +107,8 @@ private:
 	GLuint uniformProjectionAO = 0, uniformSampleRadius = 0;
 
 	GLuint uniformProjectionEnv = 0, uniformViewEnv = 0;
+
+	GLuint uniformProjectionIrr = 0, uniformViewIrr = 0;
 
 	GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0, uniformPrevPVM = 0, uniformEyePosition = 0, uniformHeightScale = 0,
 	    uniformAlbedoMap = 0, uniformMetallicMap = 0, uniformNormalMap = 0, uniformRoughnessMap = 0, uniformParallaxMap = 0, uniformGlowMap = 0,
@@ -154,6 +158,9 @@ private:
 
 	Equirectangular_to_CubeMap_Shader environmentMapShader;
 	Equirectangular_to_CubeMap_Framebuffer* environmentMap;
+
+	Irradiance_Convolution_Shader irradianceConvolutionShader;
+	Equirectangular_to_CubeMap_Framebuffer* irradianceMap;
 
 	std::vector<Model_Shader> shaderList;
 	std::vector<Model_Shader> animShaderList;
@@ -273,4 +280,16 @@ private:
 
 	glm::mat4 vView[3];
 	glm::mat4 testLitView[1];
+
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureViews[6] =
+	{
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))
+	};
+
 };

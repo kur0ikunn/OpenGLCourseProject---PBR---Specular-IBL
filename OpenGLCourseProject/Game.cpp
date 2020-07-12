@@ -13,7 +13,7 @@ float scaleMax = 5.0f;
 float scaleMin = -1.0f;
 
 float terrainScaleFactor = 0.0f;
-float terrainScaleFactor1 = 500.0f;
+float terrainScaleFactor1 = 1000.0f;
 
 Game::Game()
 {
@@ -153,6 +153,9 @@ void Game::init()
 	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
 	environmentMap->Init(ScreenWidth, ScreenWidth);
 
+	irradianceMap = new Equirectangular_to_CubeMap_Framebuffer();
+	irradianceMap->Init(32, 32);
+
 	hdr = new HDR_Framebuffer();
 	hdr->Init(ScreenWidth, ScreenHeight);
 
@@ -233,7 +236,9 @@ void Game::init()
 		printf("%F \n", vClip.z);
 		terrainShader.SetCascadeEndClipSpace(i, -vClip.z);
 	}
+
 	EnvironmentMapPass();
+	IrradianceConvolutionPass();
 }
 
 void Game::update(float fps) {
@@ -289,7 +294,6 @@ void Game::update(float fps) {
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
-	//EnvironmentMapPass();
 	RenderPass(projection, camera.calculateViewMatrix(), deltaTime);
 	BlurPass();
 	MotionBlurPass(fps);
@@ -509,6 +513,7 @@ void Game::CreateShaders() {
 	ssaoBlurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/ssao_blur_framebuffer.frag");
 
 	environmentMapShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
+	irradianceConvolutionShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/irradiance_covolution.frag");
 
 	Model_Shader* shader1 = new Model_Shader();
 	shader1->CreateFromFiles(vShader, fShader);
@@ -575,11 +580,20 @@ void Game::RenderTerrain()
 	
 	terrainList[0]->RenderTessellatedMesh();
 	terrainList[0]->prevMesh = model;	
+
+	irradianceMap->Read(GL_TEXTURE11);
 }
 
-void Game::RenderEnvCubeMap()
+void Game::RenderEnvCubeMap(bool is_cubeMap)
 {
-	environmentTexture.UseTexture(0);
+	if(is_cubeMap)
+	{
+		environmentMap->Read(GL_TEXTURE1);
+	}
+	else
+	{
+		environmentTexture.UseTexture(0);
+	}
 	mesh_cube->RenderCube();
 }
 
@@ -797,8 +811,7 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	anymodel.RenderModel();
 	anymodel.prevModel = model;
 
-
-	//skyboxTexture.UseCubeMap(7);
+	irradianceMap->Read(GL_TEXTURE8);
 }
 
 void Game::RenderAnimScene(bool shadow, bool depth) {
@@ -855,7 +868,7 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 	anim2.RenderModel();
 	anim2.prevModel = model;
 
-	//skyboxTexture.UseCubeMap(7);
+	irradianceMap->Read(GL_TEXTURE8);
 }
 
 void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light) {
@@ -1034,17 +1047,6 @@ void Game::SSAOBlurPass()
 
 void Game::EnvironmentMapPass()
 {
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	glm::mat4 captureViews[6] =
-	{
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)),
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)),
-		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f))
-	};
-
 	environmentMapShader.UseShader();
 	environmentMapShader.SetTexture(1);
 
@@ -1061,7 +1063,30 @@ void Game::EnvironmentMapPass()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	    environmentMapShader.Validate();
 
-		RenderEnvCubeMap();
+		RenderEnvCubeMap(false);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Game::IrradianceConvolutionPass()
+{
+	irradianceConvolutionShader.UseShader();
+	irradianceConvolutionShader.SetSkybox(1);
+
+	uniformProjectionIrr = irradianceConvolutionShader.GetProjectionLocation();
+	glUniformMatrix4fv(uniformProjectionIrr, 1, GL_FALSE, glm::value_ptr(captureProjection));
+
+	glViewport(0, 0, irradianceMap->GetWidth(), irradianceMap->GetHeight());
+	irradianceMap->Write(-1);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		uniformViewIrr = irradianceConvolutionShader.GetViewLocation();
+		glUniformMatrix4fv(uniformViewIrr, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
+		irradianceMap->Write(i);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		irradianceConvolutionShader.Validate();
+
+		RenderEnvCubeMap(true);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -1105,6 +1130,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	ssaoBlur->Read(GL_TEXTURE14);
 	terrainShader.SetDirectionalShadowMaps(&mainLight, NUM_CASCADES, 2);
 	terrainShader.SetAOMap(14);
+	terrainShader.SetSkybox(11);
 
 	terrainShader.Validate();
 
