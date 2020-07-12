@@ -17,7 +17,7 @@ float terrainScaleFactor1 = 1000.0f;
 
 Game::Game()
 {
-
+ //empty
 }
 
 void Game::init()
