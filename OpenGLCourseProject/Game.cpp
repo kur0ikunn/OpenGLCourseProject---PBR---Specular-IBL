@@ -166,12 +166,12 @@ void Game::init()
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
 	mainLight = DirectionalLight(2048, 2048,
-		2.0f, 2.0f, 2.0f,
+		1.0f, 1.0f, 1.0f,
 		-2000.0f, -3000.0f, -1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
 		0.1f, 100.0f,
-		1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f,
 		-3.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
 
 	pointLightCount++;
@@ -185,7 +185,7 @@ void Game::init()
 
 	spotLights[0] = SpotLight(1024, 1024,
 		0.1f, 100.0f,
-		10.0f, 10.0f, 10.0f,
+		0.5f, 0.5f, 0.5f,
 		0.0f, 0.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
 		10.0f);

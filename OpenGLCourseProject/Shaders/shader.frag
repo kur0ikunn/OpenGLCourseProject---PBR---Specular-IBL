@@ -228,11 +228,11 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	float NDF = DistributionGGX(N, H, roughness);
 	float G = GeometrySmith(N, V, L, roughness);
-	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);      //0.0
+	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    //0.0
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
-	vec3 specular = nominator/max(denominator,1.0);    //0.001-has banding issues 
+	vec3 specular = nominator/max(denominator,0.001);    //0.001-has banding issues 
 	
 	vec3 kS = F;
 	vec3 kD = vec3(1.0)-kS;
@@ -401,7 +401,8 @@ void main()
 	color = texColor;
 
 	float brightness = dot(texColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	if(brightness>1.0f){
+	if(brightness>1.0f)
+	{
 		BrightColor = vec4(texColor.rgb,1.0f);
 	}
 	else

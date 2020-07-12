@@ -114,7 +114,9 @@ float CalcDirectionalShadowFactor(int CascadeIndex, DirectionalLight light, vec4
 	vec3 normal = normalize(Normal);
 	vec3 lightDir = normalize(light.direction);
 	
-	float bias = max(0.0001 * (1 - dot(normal, lightDir)), 0.0001);
+	float bias = 0;
+	if(CascadeIndex>=2) bias = max(0.001 * (1 - dot(normal, lightDir)), 0.001);
+	else bias = max(0.0001 * (1 - dot(normal, lightDir)), 0.0001);
 
 		
 	float shadow = 0.0;
@@ -169,7 +171,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
 	float a = roughness*roughness;
 	float a2 = a*a;
-	float NdotH = max(dot(N,H), 0.0); //0.0
+	float NdotH = max(dot(N,H), 0.0);  //0.0
 	float NdotH2 = NdotH*NdotH;
 	
 	float nom = a2;
@@ -192,8 +194,8 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 
 float GeometrySmith(vec3 N,vec3 V, vec3 L, float roughness)
 {
-	float NdotV = max(dot(N, V),0.0);   //0.0
-	float NdotL = max(dot(N, L), 0.0);  //0.0
+	float NdotV = max(dot(N, V),0.0);    //0.0
+	float NdotL = max(dot(N, L), 0.0);   //0.0
 	float ggx2 = GeometrySchlickGGX(NdotV, roughness);
 	float ggx1 = GeometrySchlickGGX(NdotL, roughness);
 	
@@ -206,6 +208,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 	//return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
+
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
 	return max(F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
@@ -215,7 +218,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool is_DirectionLight, bool is_PointLight, bool is_SpotLight)
 {
-    vec3 L = vec3(0.0f);
+	vec3 L = vec3(0.0f);
 	
 	float distance = 0.0f;
 
@@ -232,7 +235,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
-	vec3 specular = nominator/max(denominator,1.0);  //0.001-has banding issues 
+	vec3 specular = nominator/max(denominator,0.5);    //0.001-has banding issues 
 	
 	vec3 kS = F;
 	vec3 kD = vec3(1.0)-kS;
@@ -242,6 +245,8 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	if(is_DirectionLight) radiance = light.color;
 	Lo+=(kD*albedo/PI+specular)*radiance* NdotL;
+	
+	vec3 ambient = vec3(0.03)* albedo* texture(AOMap,CalcScreenTexCoord()).r;
 	
 	if(light.color.x+light.color.y+light.color.z == 0.0) return vec4(0.0f);	
 	else return vec4((1.0-shadowFactor)*Lo, 1.0);
@@ -355,8 +360,9 @@ void main()
 	color = texColor/*+CascadeIndicator*/;
 
 	float brightness = dot(texColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-	if(brightness>1.0f){
-	BrightColor = vec4(texColor.rgb,1.0f);
+	if(brightness>1.0f)
+	{
+		BrightColor = vec4(texColor.rgb,1.0f);
 	}
 	else
 	{
