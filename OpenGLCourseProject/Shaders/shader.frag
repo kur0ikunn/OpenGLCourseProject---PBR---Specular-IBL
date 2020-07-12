@@ -232,7 +232,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
-	vec3 specular = nominator/max(denominator,0.001);    //0.001-has banding issues 
+	vec3 specular = nominator/max(denominator,0.5);    //0.001-has banding issues 
 	
 	vec3 kS = F;
 	vec3 kD = vec3(1.0)-kS;
