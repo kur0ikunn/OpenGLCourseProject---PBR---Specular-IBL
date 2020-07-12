@@ -28,7 +28,6 @@ float roughness;
 vec3 N;
 vec3 V;
 vec3 F0 = vec3(0.04);
-vec3 Lo = vec3(0.0);
 
 struct Light
 {
@@ -215,12 +214,10 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool is_DirectionLight, bool is_PointLight, bool is_SpotLight)
 {
-	vec3 L = vec3(0.0f);
-	
 	float distance = 0.0f;
 
 	distance= length(direction);
-	L = normalize(direction);
+	vec3 L = normalize(direction);
 
 	vec3 H = normalize(V+L);
 	float attenuation = 1.0/(distance*distance);
@@ -232,7 +229,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
-	vec3 specular = nominator/max(denominator,0.5);    //0.001-has banding issues 
+	vec3 specular = nominator/max(denominator,0.001);    //0.001-has banding issues 
 	
 	vec3 kS = F;
 	vec3 kD = vec3(1.0)-kS;
@@ -241,7 +238,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	float NdotL = max(dot(N, L),0.0);
 	
 	if(is_DirectionLight) radiance = light.color;
-	Lo+=(kD*albedo/PI+specular)*radiance* NdotL;
+	vec3 Lo =(kD*albedo/PI+specular)*radiance* NdotL;
 	
 	vec3 ambient = vec3(0.03)* albedo* texture(AOMap,CalcScreenTexCoord()).r;
 	
