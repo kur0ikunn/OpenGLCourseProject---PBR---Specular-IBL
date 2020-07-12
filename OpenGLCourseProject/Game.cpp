@@ -261,7 +261,7 @@ void Game::update(float fps) {
 	if (abs(triOffset) >= triMaxOffset) {
 		direction = !direction;
 	}
-	curAngle += 2.0f;
+	curAngle += 0.5f;
 	if (curAngle >= 360) {
 		curAngle -= 360;
 	}
