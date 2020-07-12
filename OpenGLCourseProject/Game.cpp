@@ -1136,17 +1136,6 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	RenderTerrain();
 
-	/*environmentMapShader.UseShader();
-	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
-	uniformViewEnv = environmentMapShader.GetViewLocation();
-	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	environmentMapShader.SetTexture(1);
-
-	environmentMapShader.Validate();
-
-	RenderEnvCubeMap();*/
-
 	shaderList[0].UseShader();
 
 	uniformModel = shaderList[0].GetModelLocation();
