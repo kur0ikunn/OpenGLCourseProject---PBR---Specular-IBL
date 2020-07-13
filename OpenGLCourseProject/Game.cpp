@@ -29,7 +29,7 @@ void Game::init()
 	CreateObject();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
+	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 30.0f, 0.2f);
 
 	environmentTexture = Texture("Textures/HDR/newport_loft.hdr");
 	environmentTexture.LoadTextureHDR();
@@ -40,8 +40,8 @@ void Game::init()
 	metalDebrisTexture.LoadTextureSRGB();
 	floorTexture = Texture("Textures/brick_floor.png");
 	floorTexture.LoadTextureSRGB();
-	rockTexture = Texture("Textures/rock.jpg");
-	rockTexture.LoadTextureSRGB();
+	rustedMetal = Texture("Textures/rustediron2.png");
+	rustedMetal.LoadTextureSRGBA();
 
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureSRGB();
@@ -55,8 +55,8 @@ void Game::init()
 	metalDebrisTextureMetal.LoadTexture();
 	floorTextureMetal = Texture("Textures/Metallic/brick_floor.png");
 	floorTextureMetal.LoadTexture();
-	rockTextureMetal = Texture("Textures/Metallic/rock.jpg");
-	rockTextureMetal.LoadTextureSRGB();
+	rustedMetalMetal = Texture("Textures/Metallic/rustediron2.png");
+	rustedMetalMetal.LoadTexture();
 
 	brickTextureNorm = Texture("Textures/Normal/brick.jpg");
 	brickTextureNorm.LoadTexture();
@@ -64,8 +64,8 @@ void Game::init()
 	metalDebrisTextureNorm.LoadTexture();
 	floorTextureNorm = Texture("Textures/Normal/brick_floor.png");
 	floorTextureNorm.LoadTexture();
-	rockTextureNorm = Texture("Textures/Normal/rock.jpg");
-	rockTextureNorm.LoadTextureSRGB();
+	rustedMetalNorm = Texture("Textures/Normal/rustediron2.png");
+	rustedMetalNorm.LoadTexture();
 
 	brickTextureRough = Texture("Textures/Roughness/brick.jpg");
 	brickTextureRough.LoadTexture();
@@ -73,8 +73,8 @@ void Game::init()
 	metalDebrisTextureRough.LoadTexture();
 	floorTextureRough = Texture("Textures/Roughness/brick_floor.png");
 	floorTextureRough.LoadTexture();
-	rockTextureRough = Texture("Textures/Roughness/rock.jpg");
-	rockTextureRough.LoadTextureSRGB();
+	rustedMetalRough = Texture("Textures/Roughness/rustediron2.png");
+	rustedMetalRough.LoadTexture();
 
 	brickTexturePara = Texture("Textures/Parallax/brick.jpg");
 	brickTexturePara.LoadTexture();
@@ -82,8 +82,8 @@ void Game::init()
 	metalDebrisTexturePara.LoadTexture();
 	floorTexturePara = Texture("Textures/Parallax/brick_floor.png");
 	floorTexturePara.LoadTexture();
-	rockTexturePara = Texture("Textures/Parallax/rock.jpg");
-	rockTexturePara.LoadTextureSRGB();
+	rustedMetalPara = Texture("Textures/Parallax/rustediron2.png");
+	rustedMetalPara.LoadTexture();
 
 	brickTextureGlow = Texture("Textures/Glow/brick.jpg");
 	brickTextureGlow.LoadTexture();
@@ -91,14 +91,14 @@ void Game::init()
 	metalDebrisTextureGlow.LoadTexture();
 	floorTextureGlow = Texture("Textures/Glow/brick_floor.png");
 	floorTextureGlow.LoadTexture();
-	rockTextureGlow = Texture("Textures/Glow/rock.jpg");
-	rockTextureGlow.LoadTextureSRGB();
+	rustedMetalGlow = Texture("Textures/Glow/rock.jpg");
+	rustedMetalGlow.LoadTexture();
 
-	floorTexture1 = Texture("Textures/rustediron2.png");
-	floorTexture1.LoadTextureSRGBA();
-	floorTextureMetal1 = Texture("Textures/Metallic/rustediron2.png");
+	floorTexture1 = Texture("Textures/rock.jpg");
+	floorTexture1.LoadTextureSRGB();
+	floorTextureMetal1 = Texture("Textures/Metallic/rock.jpg");
 	floorTextureMetal1.LoadTexture();
-	floorTextureRough1 = Texture("Textures/Roughness/rustediron2.png");
+	floorTextureRough1 = Texture("Textures/Roughness/rock.jpg");
 	floorTextureRough1.LoadTexture();
 	floorTextureDisp1 = Texture("Textures/Displacement/d_floor.jpg");
 	floorTextureDisp1.LoadTexture();
@@ -171,7 +171,7 @@ void Game::init()
 
 	pointLights[0] = PointLight(1024, 1024,
 		0.1f, 100.0f,
-		2.0f, 2.0f, 2.0f,
+		1.0f, 1.0f, 1.0f,
 		-3.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
 
 	pointLightCount++;
@@ -603,17 +603,17 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(-terrainScaleFactor, 34.0f, -2.5f - terrainScaleFactor));
-	model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	/*model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));*/
 	//model = glm::scale(model,glm::vec3(0.4f,0.4f,1.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * meshList[0]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	rockTexture.UseTexture(0);
-	rockTextureMetal.UseTexture(5);
-	rockTextureNorm.UseTexture(6);
-	rockTextureRough.UseTexture(8);
-	rockTexturePara.UseTexture(9);
-	rockTextureGlow.UseTexture(10);
+	rustedMetal.UseTexture(0);
+	rustedMetalMetal.UseTexture(5);
+	rustedMetalNorm.UseTexture(6);
+	rustedMetalRough.UseTexture(8);
+	rustedMetalPara.UseTexture(9);
+	rustedMetalGlow.UseTexture(10);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[0]->RenderMesh();
 	meshList[0]->prevMesh = model;
@@ -826,7 +826,7 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 	glUniformMatrix4fv(uniformModel1, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * anim.prevModel;
 	glUniformMatrix4fv(uniformPrevPVM1, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	rockTexture.UseTexture(0);
+	rustedMetal.UseTexture(0);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1, uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
 
 	if (shadow)

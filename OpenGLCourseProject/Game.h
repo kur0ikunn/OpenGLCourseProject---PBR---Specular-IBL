@@ -218,12 +218,12 @@ private:
 	Texture floorTextureRough;
 	Texture floorTexturePara;
 	Texture floorTextureGlow;
-	Texture rockTexture;
-	Texture rockTextureMetal;
-	Texture rockTextureNorm;
-	Texture rockTextureRough;
-	Texture rockTexturePara;
-	Texture rockTextureGlow;
+	Texture rustedMetal;
+	Texture rustedMetalMetal;
+	Texture rustedMetalNorm;
+	Texture rustedMetalRough;
+	Texture rustedMetalPara;
+	Texture rustedMetalGlow;
 
 	Texture floorTexture1;
 	Texture floorTextureMetal1;

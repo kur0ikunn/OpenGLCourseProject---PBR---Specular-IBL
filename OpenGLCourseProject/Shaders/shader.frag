@@ -212,7 +212,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 }
 
 
-vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool is_DirectionLight, bool is_PointLight, bool is_SpotLight)
+vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool is_DirectionLight)
 {
 	float distance = 0.0f;
 
@@ -225,7 +225,7 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	
 	float NDF = DistributionGGX(N, H, roughness);
 	float G = GeometrySmith(N, V, L, roughness);
-	vec3 F = fresnelSchlickRoughness(max(dot(H, V), 0.0), F0, roughness);    //0.0
+	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);    //0.0
 	
 	vec3 nominator = NDF*G*F;
 	float denominator = 4* max(dot(N,V),0.0)*max(dot(N,L), 0.0);
@@ -248,10 +248,10 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 vec4 CalcDirectionalLight()
 {
 	float shadowFactor = CalcDirectionalShadowFactor(directionalLight);
-	return CalcLightByDirection(directionalLight.base, directionalLight.direction, shadowFactor, true, false, false);
+	return CalcLightByDirection(directionalLight.base, directionalLight.direction, shadowFactor, true);
 }
 
-vec4 CalcPointLight(PointLight pLight, int shadowIndex, bool is_PointLight, bool is_SpotLight)
+vec4 CalcPointLight(PointLight pLight, int shadowIndex)
 {
 	vec3 direction = FragPos - pLight.position;
 	direction = normalize(direction);
@@ -261,7 +261,7 @@ vec4 CalcPointLight(PointLight pLight, int shadowIndex, bool is_PointLight, bool
 	
 	float shadowFactor = CalcOmniShadowFactor(pLight, shadowIndex, bias);
 		
-	vec4 color = CalcLightByDirection(pLight.base, direction, shadowFactor, false, is_PointLight,is_SpotLight);
+	vec4 color = CalcLightByDirection(pLight.base, direction, shadowFactor, false);
 	
 	return color;
 }
@@ -273,7 +273,7 @@ vec4 CalcSpotLight(SpotLight sLight, int shadowIndex)
 
 	if(slFactor > sLight.edge)
 	{
-		vec4 color = CalcPointLight(sLight.base, shadowIndex, false, true);
+		vec4 color = CalcPointLight(sLight.base, shadowIndex);
 		return color * (1.0f - (1.0f- slFactor)*(1.0f/(1.0f -sLight.edge)));
 	}else{
 		return vec4(0, 0, 0, 1);
@@ -285,7 +285,7 @@ vec4 CalcPointLights()
 	vec4 totalColor = vec4(0, 0, 0, 1);		//set alpha to 1 when using blending
 	for(int i = 0; i < PointLightCount; i++)
 	{
-		totalColor += CalcPointLight(pointLights[i], i, true, false);
+		totalColor += CalcPointLight(pointLights[i], i);
 	}
 	
 	return totalColor;
