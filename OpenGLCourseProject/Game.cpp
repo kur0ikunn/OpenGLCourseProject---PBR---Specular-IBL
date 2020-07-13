@@ -29,7 +29,7 @@ void Game::init()
 	CreateObject();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 100.0f, 0.2f);
+	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
 
 	environmentTexture = Texture("Textures/HDR/newport_loft.hdr");
 	environmentTexture.LoadTextureHDR();
