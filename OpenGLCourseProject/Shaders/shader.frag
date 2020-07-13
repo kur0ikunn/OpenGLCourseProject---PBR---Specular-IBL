@@ -240,8 +240,6 @@ vec4 CalcLightByDirection(Light light, vec3 direction, float shadowFactor, bool 
 	if(is_DirectionLight) radiance = light.color;
 	vec3 Lo =(kD*albedo/PI+specular)*radiance* NdotL;
 	
-	vec3 ambient = vec3(0.03)* albedo* texture(AOMap,CalcScreenTexCoord()).r;
-	
 	if(light.color.x+light.color.y+light.color.z == 0.0) return vec4(0.0f);	
 	else return vec4((1.0-shadowFactor)*Lo, 1.0);
 	
