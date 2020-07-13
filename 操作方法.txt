@@ -1,6 +1,7 @@
 Release x86 でお願いします。 VSで開けない場合Sampleフォルダで実行したアプリケーションがあります。
 
 WASD  -> 移動
-space -> 上がる
-r.ctrl->　下がる
-esc-> 終了
+Space -> 上がる
+Right CTRL->　下がる
+L-> Spotlight ON/OFF
+ESC-> 終了
