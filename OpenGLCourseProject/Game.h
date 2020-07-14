@@ -281,7 +281,7 @@ private:
 
 	const char* avShader = "Shaders/animated_shader.vert";
 
-	std::vector<glm::vec3> ssaoNoiseData{ 16, glm::vec3(0.0f, 0.0f, 0.0f) };
+	std::vector<glm::vec3> ssaoNoiseData{ 100, glm::vec3(0.0f, 0.0f, 0.0f) };
 
 	glm::mat4 prevProjView = glm::mat4();
 

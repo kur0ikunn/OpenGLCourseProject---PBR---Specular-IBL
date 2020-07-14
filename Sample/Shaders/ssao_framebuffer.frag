@@ -11,13 +11,13 @@ uniform sampler2D noise;
 uniform float SampleRad;
 uniform mat4 Projection;
 
-const int MAX_KERNEL_SIZE =8;
+const int MAX_KERNEL_SIZE =128;
 uniform vec3 Kernel[MAX_KERNEL_SIZE];
 
 
 float bias = 0.025;
 // tile noise texture over screen based on screen dimensions divided by noise size
-const vec2 noiseScale = vec2(1920.0/4.0, 1080.0/4.0); 
+const vec2 noiseScale = vec2(1920.0/10.0, 1080.0/10.0); 
 
 vec3 PositionFromDepth(vec2 Coords)
 {

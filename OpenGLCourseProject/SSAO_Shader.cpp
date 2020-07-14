@@ -59,7 +59,7 @@ void SSAO_Shader::GenKernel()
 
 void SSAO_Shader::GenNoise(std::vector<glm::vec3>& ssaoNoise)
 {
-	for (unsigned int i = 0; i < 16; i++)
+	for (unsigned int i = 0; i < 100; i++)
 	{
 		glm::vec3 noise(
 			2.0f * (float)rand() / RAND_MAX - 1.0f,
