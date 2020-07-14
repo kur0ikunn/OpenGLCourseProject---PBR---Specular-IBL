@@ -15,7 +15,9 @@ public:
 	void SetSpotLight(SpotLight* sLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
 	void SetDirectionalShadowMaps(Light* light, unsigned int i,GLuint textureUnit);
 	void SetAOMap(GLuint textureUnit);
-	void SetSkybox(GLuint textureUnit);
+	void SetIrradianceMap(GLuint textureUnit);
+	void SetPrefilterMap(GLuint textureUnit);
+	void SetBRDFLUT(GLuint textureUnit);
 	void SetDirectionalLightTransforms(int i, glm::mat4* lTransform);
 	void SetDirectionalLightTransform(glm::mat4* lTransform);
 	void SetCascadeEndClipSpace(int i, float z);

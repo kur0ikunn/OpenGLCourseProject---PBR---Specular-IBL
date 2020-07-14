@@ -54,6 +54,9 @@ public:
 	virtual void SetSpotLight(SpotLight* sLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
 	virtual void SetTexture(GLuint textureUnit);
 	virtual void SetSkybox(GLuint textureUnit);
+	virtual void SetIrradianceMap(GLuint textureUnit);
+	virtual void SetPrefilterMap(GLuint textureUnit);
+	virtual void SetBRDFLUT(GLuint textureUnit);
 	virtual void SetDirectionalShadowMap(GLuint textureUnit);
 	virtual void SetAOMap(GLuint textureUnit);
 	virtual void SetDirectionalLightTransform(glm::mat4* lTransform);
@@ -68,7 +71,8 @@ protected:
 	int pointLightCount = 0;
 	int spotLightCount = 0;
 
-	GLuint shaderID = 0, uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformPrevPVM = 0, uniformEyePosition = 0, uniformHeightScale = 0, uniformSkybox = 0,
+	GLuint shaderID = 0, uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformPrevPVM = 0, uniformEyePosition = 0, uniformHeightScale = 0,
+		uniformSkybox = 0, uniformIrradiance = 0, uniformPrefilter = 0, uniformBRDF= 0,
 		uniformAlbedo= 0, uniformMetallic = 0, uniformNormal = 0, uniformRoughness = 0, uniformParallax = 0, uniformGlow = 0, uniformAO = 0,
 		uniformTexture = 0,
 		uniformDirectionalLightTransform = 0, uniformDirectionalShadowMap = 0,

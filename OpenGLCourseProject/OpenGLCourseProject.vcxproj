@@ -24,6 +24,8 @@
     <ClCompile Include="Billboard_Shader.cpp" />
     <ClCompile Include="Blur_PingPong_FrameBuffer.cpp" />
     <ClCompile Include="Blur_Shader.cpp" />
+    <ClCompile Include="BRDF_Framebuffer.cpp" />
+    <ClCompile Include="BRDF_Shader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Equirectangular_to_CubeMap_Framebuffer.cpp" />
@@ -46,6 +48,8 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Particle_Shader.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PreFilter_Framebuffer.cpp" />
+    <ClCompile Include="PreFilter_Shader.cpp" />
     <ClCompile Include="PreZPass_Shader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap_FrameBuffer.cpp" />
@@ -71,6 +75,8 @@
     <ClInclude Include="Billboard_Shader.h" />
     <ClInclude Include="Blur_PingPong_Framebuffer.h" />
     <ClInclude Include="Blur_Shader.h" />
+    <ClInclude Include="BRDF_Framebuffer.h" />
+    <ClInclude Include="BRDF_Shader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -93,6 +99,8 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Particle_Shader.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PreFilter_Framebuffer.h" />
+    <ClInclude Include="PreFilter_Shader.h" />
     <ClInclude Include="PreZPass_Shader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap_FrameBuffer.h" />

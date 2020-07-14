@@ -287,6 +287,18 @@ void Shader::SetSkybox(GLuint textureUnit)
 
 }
 
+void Shader::SetIrradianceMap(GLuint textureUnit)
+{
+}
+
+void Shader::SetPrefilterMap(GLuint textureUnit)
+{
+}
+
+void Shader::SetBRDFLUT(GLuint textureUnit)
+{
+}
+
 void Shader::SetDirectionalShadowMap(GLuint textureUnit)
 {
 

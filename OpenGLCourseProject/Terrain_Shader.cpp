@@ -58,7 +58,9 @@ void Terrain_Shader::CompileProgram()
 		uniformSpotLight[i].uniformEdge = glGetUniformLocation(shaderID, locBuff);
 	}
 	uniformAO = glGetUniformLocation(shaderID, "AOMap");
-	uniformSkybox = glGetUniformLocation(shaderID, "skybox");
+	uniformIrradiance = glGetUniformLocation(shaderID, "irradianceMap");
+	uniformPrefilter = glGetUniformLocation(shaderID, "prefilterMap");
+	uniformBRDF = glGetUniformLocation(shaderID, "brdfLUT");
 	uniformDirectionalLightTransform = glGetUniformLocation(shaderID, "DirectionalLightTransform");
 	uniformOmniLightPos = glGetUniformLocation(shaderID, "lightPos");
 	uniformFarPlane = glGetUniformLocation(shaderID, "farPlane");
@@ -168,9 +170,19 @@ void Terrain_Shader::SetAOMap(GLuint textureUnit)
 	glUniform1i(uniformAO, textureUnit);
 }
 
-void Terrain_Shader::SetSkybox(GLuint textureUnit)
+void Terrain_Shader::SetIrradianceMap(GLuint textureUnit)
 {
-	glUniform1i(uniformSkybox, textureUnit);
+	glUniform1i(uniformIrradiance, textureUnit);
+}
+
+void Terrain_Shader::SetPrefilterMap(GLuint textureUnit)
+{
+	glUniform1i(uniformPrefilter, textureUnit);
+}
+
+void Terrain_Shader::SetBRDFLUT(GLuint textureUnit)
+{
+	glUniform1i(uniformBRDF, textureUnit);
 }
 
 void Terrain_Shader::SetDirectionalLightTransforms(int i, glm::mat4* lTransform)

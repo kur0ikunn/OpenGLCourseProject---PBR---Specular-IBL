@@ -94,23 +94,23 @@ void Game::init()
 	rustedMetalGlow = Texture("Textures/Glow/rock.jpg");
 	rustedMetalGlow.LoadTexture();
 
-	floorTexture1 = Texture("Textures/rock.jpg");
-	floorTexture1.LoadTextureSRGB();
-	floorTextureMetal1 = Texture("Textures/Metallic/rock.jpg");
+	floorTexture1 = Texture("Textures/rustediron2.png");
+	floorTexture1.LoadTextureSRGBA();
+	floorTextureMetal1 = Texture("Textures/Metallic/rustediron2.png");
 	floorTextureMetal1.LoadTexture();
-	floorTextureRough1 = Texture("Textures/Roughness/rock.jpg");
+	floorTextureRough1 = Texture("Textures/Roughness/rustediron2.png");
 	floorTextureRough1.LoadTexture();
 	floorTextureDisp1 = Texture("Textures/Displacement/d_floor.jpg");
 	floorTextureDisp1.LoadTexture();
 
-	shinyMaterialGlow = Material(1, 6, 7, 9, 10, 11);
-	dullMaterialGlow = Material(1, 6, 7, 9, 10, 11);
+	shinyMaterialGlow = Material(1, 6, 7, 11, 12, 13);
+	dullMaterialGlow = Material(1, 6, 7, 11, 12, 13);
 
-	shinyMaterialPara = Material(1, 6, 7, 9,10);
-	dullMaterialPara = Material(1, 6, 7, 9,10);
+	shinyMaterialPara = Material(1, 6, 7, 11,12);
+	dullMaterialPara = Material(1, 6, 7, 11,12);
 
-	shinyMaterialRough= Material(1, 6, 7, 9);
-	dullMaterialRough = Material(1, 6, 7, 9);
+	shinyMaterialRough= Material(1, 6, 7, 11);
+	dullMaterialRough = Material(1, 6, 7, 11);
 
 	shinyMaterialNorm = Material(1, 6, 7);
 	dullMaterialNorm = Material(1, 6, 7);
@@ -121,8 +121,8 @@ void Game::init()
 	shinyMaterial = Material(1, 1);
 	dullMaterial = Material(1, 1);
 	
-	shinyTerrainMaterial = Material(1, 8, 9, 10);
-	dullTerrainMaterial = Material(1, 8, 9, 10);
+	shinyTerrainMaterial = Material(1, 11, 12, 13);
+	dullTerrainMaterial = Material(1, 11, 12, 13);
 	
 	cube.LoadModel("Models/cube.obj");
 
@@ -138,6 +138,18 @@ void Game::init()
 
 	anim2.LoadModel("Models/model.dae");
 
+	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
+	environmentMap->Init(ScreenWidth, ScreenWidth, true);
+
+	irradianceMap = new Equirectangular_to_CubeMap_Framebuffer();
+	irradianceMap->Init(32, 32, false);
+
+	prefilterMap = new PreFilter_Framebuffer();
+	prefilterMap->Init(128, 128);
+
+	brdfMap = new BRDF_Framebuffer();
+	brdfMap->Init(ScreenWidth, ScreenWidth);
+
 	quad = new Static_Mesh();
 	mesh_cube = new Static_Mesh();
 
@@ -150,12 +162,6 @@ void Game::init()
 	ssaoBlur = new SSAOBlur_Framebuffer();
 	ssaoBlur->Init(ScreenWidth, ScreenHeight);
 
-	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
-	environmentMap->Init(ScreenWidth, ScreenWidth);
-
-	irradianceMap = new Equirectangular_to_CubeMap_Framebuffer();
-	irradianceMap->Init(32, 32);
-
 	hdr = new HDR_Framebuffer();
 	hdr->Init(ScreenWidth, ScreenHeight);
 
@@ -166,12 +172,12 @@ void Game::init()
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
 	mainLight = DirectionalLight(2048, 2048,
-		2.0f, 2.0f, 2.0f,
+		0.5f, 0.5f, 0.5f,
 		-2000.0f, -3000.0f, -1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
 		0.1f, 100.0f,
-		1.0f, 1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f,
 		-3.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
 
 	pointLightCount++;
@@ -185,7 +191,7 @@ void Game::init()
 
 	spotLights[0] = SpotLight(1024, 1024,
 		0.1f, 100.0f,
-		10.0f, 10.0f, 10.0f,
+		1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
 		10.0f);
@@ -239,6 +245,8 @@ void Game::init()
 
 	EnvironmentMapPass();
 	IrradianceConvolutionPass();
+	PrefilterPass();
+	BRDFPass();
 }
 
 void Game::update(float fps) {
@@ -291,6 +299,7 @@ void Game::update(float fps) {
 	for (size_t i = 0; i < spotLightCount; i++) {
 		OmniShadowMapPass(&spotLights[i]);
 	}
+
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
@@ -495,6 +504,11 @@ void Game::CreateObject() {
 
 void Game::CreateShaders() {
 
+	environmentMapShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
+	irradianceConvolutionShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/irradiance_covolution.frag");
+	prefilterShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/prefilter.frag");
+	brdfShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/brdf.frag");
+
 	directionalShadowShader.CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
 	omniShadowShader.CreateFromFiles("Shaders/omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
 	
@@ -511,9 +525,6 @@ void Game::CreateShaders() {
 	ssaoShader.CreateFromFiles("Shaders/ssao_framebuffer.vert", "Shaders/ssao_framebuffer.frag");
 
 	ssaoBlurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/ssao_blur_framebuffer.frag");
-
-	environmentMapShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
-	irradianceConvolutionShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/irradiance_covolution.frag");
 
 	Model_Shader* shader1 = new Model_Shader();
 	shader1->CreateFromFiles(vShader, fShader);
@@ -573,15 +584,13 @@ void Game::RenderTerrain()
 	prevPVM = prevProjView * terrainList[0]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM2, 1, GL_FALSE, glm::value_ptr(prevPVM));
 	floorTexture1.UseTexture(0);
-	floorTextureMetal1.UseTexture(7);
-	floorTextureDisp1.UseTexture(8);
-	floorTextureRough1.UseTexture(9);
+	floorTextureMetal1.UseTexture(10);
+	floorTextureDisp1.UseTexture(11);
+	floorTextureRough1.UseTexture(12);
 	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformDisplacement, uniformRoughnessMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
 	terrainList[0]->prevMesh = model;	
-
-	irradianceMap->Read(GL_TEXTURE11);
 }
 
 void Game::RenderEnvCubeMap(bool is_cubeMap)
@@ -598,6 +607,7 @@ void Game::RenderEnvCubeMap(bool is_cubeMap)
 }
 
 void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
+
 	glm::mat4 model;
 	glm::mat4 prevPVM = glm::mat4();
 
@@ -611,9 +621,9 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	rustedMetal.UseTexture(0);
 	rustedMetalMetal.UseTexture(5);
 	rustedMetalNorm.UseTexture(6);
-	rustedMetalRough.UseTexture(8);
-	rustedMetalPara.UseTexture(9);
-	rustedMetalGlow.UseTexture(10);
+	rustedMetalRough.UseTexture(10);
+	rustedMetalPara.UseTexture(11);
+	rustedMetalGlow.UseTexture(12);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[0]->RenderMesh();
 	meshList[0]->prevMesh = model;
@@ -656,9 +666,9 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	metalDebrisTexture.UseTexture(0);
 	metalDebrisTextureMetal.UseTexture(5);
 	metalDebrisTextureNorm.UseTexture(6);
-	metalDebrisTextureRough.UseTexture(8);
-	metalDebrisTexturePara.UseTexture(9);
-	metalDebrisTextureGlow.UseTexture(10);
+	metalDebrisTextureRough.UseTexture(10);
+	metalDebrisTexturePara.UseTexture(11);
+	metalDebrisTextureGlow.UseTexture(12);
 	dullMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[1]->RenderMesh();
 	meshList[1]->prevMesh = model;
@@ -675,9 +685,9 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	floorTexture.UseTexture(0);
 	floorTextureMetal.UseTexture(5);
 	floorTextureNorm.UseTexture(6);
-	floorTextureRough.UseTexture(8);
-	floorTexturePara.UseTexture(9);
-	floorTextureGlow.UseTexture(10);
+	floorTextureRough.UseTexture(10);
+	floorTexturePara.UseTexture(11);
+	floorTextureGlow.UseTexture(12);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[2]->RenderMesh();
 	meshList[2]->prevMesh = model;
@@ -692,9 +702,9 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	brickTexture.UseTexture(0);
 	brickTextureMetal.UseTexture(5);
 	brickTextureNorm.UseTexture(6);
-	brickTextureRough.UseTexture(8);
-	brickTexturePara.UseTexture(9);
-	brickTextureGlow.UseTexture(10);
+	brickTextureRough.UseTexture(10);
+	brickTexturePara.UseTexture(11);
+	brickTextureGlow.UseTexture(12);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[3]->RenderMesh();
 	meshList[3]->prevMesh = model;
@@ -810,12 +820,9 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	anymodel.RenderModel();
 	anymodel.prevModel = model;
-
-	irradianceMap->Read(GL_TEXTURE8);
 }
 
 void Game::RenderAnimScene(bool shadow, bool depth) {
-
 	glm::mat4 model;
 	glm::mat4 prevPVM = glm::mat4();
 
@@ -826,7 +833,6 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 	glUniformMatrix4fv(uniformModel1, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * anim.prevModel;
 	glUniformMatrix4fv(uniformPrevPVM1, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	rustedMetal.UseTexture(0);
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1, uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
 
 	if (shadow)
@@ -867,8 +873,100 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 
 	anim2.RenderModel();
 	anim2.prevModel = model;
+}
 
-	irradianceMap->Read(GL_TEXTURE8);
+void Game::EnvironmentMapPass()
+{
+	environmentMapShader.UseShader();
+	environmentMapShader.SetTexture(1);
+
+	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
+
+	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
+	environmentMap->Write(-1);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		uniformViewEnv = environmentMapShader.GetViewLocation();
+		glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
+		environmentMap->Write(i);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		environmentMapShader.Validate();
+
+		RenderEnvCubeMap(false);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	environmentMap->CreateFirstMipFace();
+}
+
+void Game::IrradianceConvolutionPass()
+{
+	irradianceConvolutionShader.UseShader();
+	irradianceConvolutionShader.SetSkybox(1);
+
+	uniformProjectionIrr = irradianceConvolutionShader.GetProjectionLocation();
+	glUniformMatrix4fv(uniformProjectionIrr, 1, GL_FALSE, glm::value_ptr(captureProjection));
+
+	glViewport(0, 0, irradianceMap->GetWidth(), irradianceMap->GetHeight());
+	irradianceMap->Write(-1);
+	for (unsigned int i = 0; i < 6; ++i)
+	{
+		uniformViewIrr = irradianceConvolutionShader.GetViewLocation();
+		glUniformMatrix4fv(uniformViewIrr, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
+		irradianceMap->Write(i);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		irradianceConvolutionShader.Validate();
+
+		RenderEnvCubeMap(true);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Game::PrefilterPass()
+{
+	prefilterShader.UseShader();
+	prefilterShader.SetSkybox(1);
+	uniformProjectionPreF = prefilterShader.GetProjectionLocation();
+	glUniformMatrix4fv(uniformProjectionPreF, 1, GL_FALSE, glm::value_ptr(captureProjection));
+
+	prefilterMap->Write(-2, 0, 0, 0);
+	unsigned int maxMipLevels = 5;
+
+	for (unsigned int mip = 0; mip < maxMipLevels; ++mip) 
+	{
+		//resize framebuffer according to mip-level size
+		unsigned int mipWidth = prefilterMap->GetWidth() * std::pow(0.5, mip);
+		unsigned int mipHeight = prefilterMap->GetHeight() * std::pow(0.5, mip);
+		prefilterMap->Write(-1, mipWidth, mipHeight, 0);
+		glViewport(0, 0, mipWidth, mipHeight);
+
+		float roughness = (float)mip / (float)(maxMipLevels - 1);
+		prefilterShader.SetRoughness(roughness);
+		for (unsigned int i = 0; i < 6; ++i) {
+			uniformViewPreF = prefilterShader.GetViewLocation();
+			glUniformMatrix4fv(uniformViewPreF, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
+			prefilterMap->Write(i, 0, 0, mip);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			prefilterShader.Validate();
+
+			RenderEnvCubeMap(true);
+		}
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Game::BRDFPass()
+{
+	glViewport(0, 0, brdfMap->GetWidth(), brdfMap->GetHeight());
+
+	brdfMap->Write();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	brdfShader.UseShader();
+	quad->RenderQuad();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light) {
@@ -1045,58 +1143,19 @@ void Game::SSAOBlurPass()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Game::EnvironmentMapPass()
-{
-	environmentMapShader.UseShader();
-	environmentMapShader.SetTexture(1);
-
-	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
-	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
-
-	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
-	environmentMap->Write(-1);
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		uniformViewEnv = environmentMapShader.GetViewLocation();
-		glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
-		environmentMap->Write(i);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	    environmentMapShader.Validate();
-
-		RenderEnvCubeMap(false);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void Game::IrradianceConvolutionPass()
-{
-	irradianceConvolutionShader.UseShader();
-	irradianceConvolutionShader.SetSkybox(1);
-
-	uniformProjectionIrr = irradianceConvolutionShader.GetProjectionLocation();
-	glUniformMatrix4fv(uniformProjectionIrr, 1, GL_FALSE, glm::value_ptr(captureProjection));
-
-	glViewport(0, 0, irradianceMap->GetWidth(), irradianceMap->GetHeight());
-	irradianceMap->Write(-1);
-	for (unsigned int i = 0; i < 6; ++i)
-	{
-		uniformViewIrr = irradianceConvolutionShader.GetViewLocation();
-		glUniformMatrix4fv(uniformViewIrr, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
-		irradianceMap->Write(i);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		irradianceConvolutionShader.Validate();
-
-		RenderEnvCubeMap(true);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
 void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat deltaTime)
 {
 	glViewport(0, 0, hdr->GetWidth(), hdr->GetHeight());
 
 	hdr->Write(); 
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	mainLight.GetShadowMap()->Read(1, GL_TEXTURE2);
+	irradianceMap->Read(GL_TEXTURE8);
+	prefilterMap->Read(GL_TEXTURE9);
+	brdfMap->Read(GL_TEXTURE10);
+	ssaoBlur->Read(GL_TEXTURE14);
 
 	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap); //should be at the end to prevent overdraw,here becoz of blending issues
 
@@ -1127,10 +1186,11 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 		terrainShader.SetDirectionalLightTransforms(i, &projView);
 	}
 
-	ssaoBlur->Read(GL_TEXTURE14);
 	terrainShader.SetDirectionalShadowMaps(&mainLight, NUM_CASCADES, 2);
 	terrainShader.SetAOMap(14);
-	terrainShader.SetSkybox(11);
+	terrainShader.SetIrradianceMap(8);
+	terrainShader.SetPrefilterMap(9);
+	terrainShader.SetBRDFLUT(10);
 
 	terrainShader.Validate();
 
@@ -1153,9 +1213,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-
 	glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-
 	glUniform1f(uniformHeightScale, 0.02f);
 
 	shaderList[0].SetDirectionalLight(&mainLight);
@@ -1163,11 +1221,11 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	shaderList[0].SetSpotLight(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
 	shaderList[0].SetDirectionalLightTransform(&mainLight.CalculateLightTransform());
 
-	mainLight.GetShadowMap()->Read(1, GL_TEXTURE2);
-	ssaoBlur->Read(GL_TEXTURE14);
 	shaderList[0].SetDirectionalShadowMap(2);
+	shaderList[0].SetIrradianceMap(8);
+	shaderList[0].SetPrefilterMap(9);
+	shaderList[0].SetBRDFLUT(10);
 	shaderList[0].SetAOMap(14);
-	shaderList[0].SetSkybox(8);
 
 	shaderList[0].Validate();
 
@@ -1199,11 +1257,11 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	animShaderList[0].SetSpotLight(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
 	animShaderList[0].SetDirectionalLightTransform(&mainLight.CalculateLightTransform());
 
-	mainLight.GetShadowMap()->Read(1, GL_TEXTURE2);
-	ssaoBlur->Read(GL_TEXTURE14);
 	animShaderList[0].SetDirectionalShadowMap(2);
 	animShaderList[0].SetAOMap(14);
-	animShaderList[0].SetSkybox(8);
+	animShaderList[0].SetIrradianceMap(8);
+	animShaderList[0].SetPrefilterMap(9);
+	animShaderList[0].SetBRDFLUT(10);
 
 	animShaderList[0].Validate();
 
@@ -1319,10 +1377,9 @@ void Game::BloomPass()
 	motionBlur->Read(GL_TEXTURE2);
 	hdrShader.SetTexture(2);
 
+	hdrShader.Validate();
 
 	quad->RenderQuad();
-
-	hdrShader.Validate();
 }
 
 Game::~Game()
@@ -1335,21 +1392,6 @@ Game::~Game()
 	}
 	for (auto a : particleList) {
 	    delete a;
-	}
-
-	if (hdr != nullptr) {
-		delete hdr;
-		hdr = nullptr;
-	}
-
-	if (blur != nullptr) {
-		delete blur;
-		blur = nullptr;
-	}
-	if(motionBlur!= nullptr)
-	{
-		delete motionBlur;
-		motionBlur = nullptr;
 	}
 
 	if (depth != nullptr) {
@@ -1366,6 +1408,33 @@ Game::~Game()
 	if (environmentMap != nullptr) {
 		delete environmentMap;
 		environmentMap = nullptr;
+	}
+	if (irradianceMap != nullptr) {
+		delete irradianceMap;
+		irradianceMap = nullptr;
+	}
+	if (prefilterMap != nullptr) {
+		delete prefilterMap;
+		prefilterMap = nullptr;
+	}
+	if (brdfMap != nullptr) {
+		delete brdfMap;
+		brdfMap = nullptr;
+	}
+
+	if (hdr != nullptr) {
+		delete hdr;
+		hdr = nullptr;
+	}
+
+	if (blur != nullptr) {
+		delete blur;
+		blur = nullptr;
+	}
+	if (motionBlur != nullptr)
+	{
+		delete motionBlur;
+		motionBlur = nullptr;
 	}
 
 	if (quad != nullptr) {

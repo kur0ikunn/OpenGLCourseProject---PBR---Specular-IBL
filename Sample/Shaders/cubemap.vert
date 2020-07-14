@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 pos;
 
-out vec3 TexCoord;
+out vec3 TexCoord;			//WorldPos
 
 uniform mat4 Projection;
 uniform mat4 View;

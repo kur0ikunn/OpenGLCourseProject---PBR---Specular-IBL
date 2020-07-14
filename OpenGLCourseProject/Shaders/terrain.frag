@@ -18,6 +18,8 @@ layout(location = 2)out vec4 MotionVector;
 
 const int MAX_POINT_LIGHTS = 3;
 const int MAX_SPOT_LIGHTS = 3;
+const float MAX_REFLECTION_LOD = 4.0;
+
 const float PI = 3.14159265359;
 
 vec4 CascadeIndicator = vec4(0.0, 0.0, 0.0, 0.0);
@@ -78,9 +80,11 @@ uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 uniform float CascadeEndClipSpace[NUM_CASCADES];
 uniform DirectionalShadowMaps directionalShadowMaps[NUM_CASCADES];
-uniform samplerCube skybox;
 uniform sampler2D AOMap;
 uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
 
@@ -330,19 +334,28 @@ void main()
 	roughness = texture(material.roughnessMap, TexCoord).r;
 	N = normalize(Normal);
 	V = normalize(FragPos-eyePosition);
+	vec3 R = reflect(V,N);
 	F0 = mix(F0, albedo, metallic);
-
+	
 	vec4 finalColor = CalcDirectionalLight();
 	finalColor += CalcPointLights();
 	finalColor += CalcSpotLights();
 	
-	// ambient lighting (we now use IBL as the ambient term)
-    vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	 // ambient lighting (we now use IBL as the ambient term)
+	vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	
+    vec3 kS = F;
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;	  
-    vec3 irradiance = texture(skybox, N).rgb;
+    vec3 irradiance = texture(irradianceMap, N).rgb;
     vec3 diffuse      = irradiance * albedo;
-    vec3 ambient = (kD * diffuse) * texture(AOMap,CalcScreenTexCoord()).r;
+	
+	//sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular par.
+	vec3 prefilteredColor = textureLod(prefilterMap, R, roughness*MAX_REFLECTION_LOD).rgb;  
+	vec2 brdf = texture(brdfLUT, vec2(max(dot(N,V),0.0),roughness)).rg;
+	vec3 specular = prefilteredColor*(F*brdf.x+brdf.y); //multiplying by irradiance fixes all problems
+	
+    vec3 ambient = (kD*diffuse+specular)*texture(AOMap,CalcScreenTexCoord()).r;
 
 	vec4 texColor = vec4(ambient,1.0)+finalColor;
 	

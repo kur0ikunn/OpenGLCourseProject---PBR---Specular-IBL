@@ -77,6 +77,7 @@ int Window::Initialise() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	//setup viewport size
 	glViewport(0, 0, bufferWidth, bufferHeight);

@@ -10,9 +10,9 @@ void Static_Model::RenderModel()
 			textureList[materialIndex]->UseTexture(0);
 			metalTextureList[materialIndex]->UseTexture(5);
 			normalTextureList[materialIndex]->UseTexture(6);
-			roughTextureList[materialIndex]->UseTexture(8);
-			parallaxTextureList[materialIndex]->UseTexture(9);
-			glowTextureList[materialIndex]->UseTexture(10);
+			roughTextureList[materialIndex]->UseTexture(10);
+			parallaxTextureList[materialIndex]->UseTexture(11);
+			glowTextureList[materialIndex]->UseTexture(12);
 		}
 
 		static_MeshList[i]->RenderMesh();

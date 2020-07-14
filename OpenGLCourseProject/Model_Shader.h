@@ -9,7 +9,10 @@ public:
 	void SetDirectionalLight(DirectionalLight* dLight);
 	void SetPointLight(PointLight* pLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
 	void SetSpotLight(SpotLight* sLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
-	void SetSkybox(GLuint textureUnit);
+	void SetSkybox(GLuint txtureUnit);
+	void SetIrradianceMap(GLuint textureUnit);
+	void SetPrefilterMap(GLuint textureUnit);
+	void SetBRDFLUT(GLuint textureUnit);
 	void SetDirectionalShadowMap(GLuint textureUnit);
 	void SetAOMap(GLuint textureUnit);
 	void SetDirectionalLightTransform(glm::mat4* lTransform);

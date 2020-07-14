@@ -19,12 +19,14 @@
 #include "CommonValues.h"
 
 #include "Window.h"
+#include "Equirectangular_to_CubeMap_Shader.h"
+#include "Irradiance_Convolution_Shader.h"
+#include "PreFilter_Shader.h"
+#include "BRDF_Shader.h"
 #include "PreZPass_Shader.h"
 #include "Terrain_PreZPass_Shader.h"
 #include "SSAO_Shader.h"
 #include "SSAOBlur_Shader.h"
-#include "Equirectangular_to_CubeMap_Shader.h"
-#include "Irradiance_Convolution_Shader.h"
 #include "Model_Shader.h"
 #include "Terrain_Shader.h"
 #include "Billboard_Shader.h"
@@ -40,6 +42,9 @@
 #include "SpotLight.h"
 #include "Material.h"
 
+#include "Equirectangular_to_CubeMap_Framebuffer.h"
+#include "PreFilter_Framebuffer.h"
+#include "BRDF_Framebuffer.h"
 #include "Depth_Framebuffer.h"
 #include "SSAO_Framebuffer.h"
 #include "SSAOBlur_Framebuffer.h"
@@ -47,8 +52,6 @@
 #include "Motion_Blur_FrameBuffer.h"
 
 #include "Blur_PingPong_Framebuffer.h"
-
-#include "Equirectangular_to_CubeMap_Framebuffer.h"
 
 #include "Static_Model.h"
 #include "Animated_Model.h"
@@ -91,24 +94,26 @@ private:
 	void RenderScene(glm::mat4 projectionMatrix = glm::mat4(), glm::mat4 viewMatrix = glm::mat4());
 	void RenderAnimScene(bool shadow, bool depth);
 
+	void EnvironmentMapPass();
+	void IrradianceConvolutionPass();
+	void PrefilterPass();
+	void BRDFPass();
 	void PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat deltaTime);
 	void SSAOPass(glm::mat4 projectionMatrix);
 	void SSAOBlurPass();
 	void DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light);
 	void OmniShadowMapPass(PointLight* light);
-	void EnvironmentMapPass();
-	void IrradianceConvolutionPass();
 	void RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat deltaTime);
 	void MotionBlurPass(float fps);
 	void BlurPass();
 	void BloomPass();
 	const float toRadians = static_cast<float>(M_PI) / 180.0f;
 
-	GLuint uniformProjectionAO = 0, uniformSampleRadius = 0;
-
 	GLuint uniformProjectionEnv = 0, uniformViewEnv = 0;
-
 	GLuint uniformProjectionIrr = 0, uniformViewIrr = 0;
+	GLuint uniformProjectionPreF = 0, uniformViewPreF = 0;
+	
+	GLuint uniformProjectionAO = 0, uniformSampleRadius = 0;
 
 	GLuint uniformModel = 0, uniformProjection = 0, uniformView = 0, uniformPrevPVM = 0, uniformEyePosition = 0, uniformHeightScale = 0,
 	    uniformAlbedoMap = 0, uniformMetallicMap = 0, uniformNormalMap = 0, uniformRoughnessMap = 0, uniformParallaxMap = 0, uniformGlowMap = 0,
@@ -136,6 +141,18 @@ private:
 
 	glm::mat4 projection = glm::mat4();
 
+	Equirectangular_to_CubeMap_Shader environmentMapShader;
+	Equirectangular_to_CubeMap_Framebuffer* environmentMap;
+
+	Irradiance_Convolution_Shader irradianceConvolutionShader;
+	Equirectangular_to_CubeMap_Framebuffer* irradianceMap;
+
+	PreFilter_Shader prefilterShader;
+	PreFilter_Framebuffer* prefilterMap;
+
+	BRDF_Shader brdfShader;
+	BRDF_Framebuffer* brdfMap;
+
 	Model_Shader directionalShadowShader;
 	Model_Shader omniShadowShader;
 
@@ -156,12 +173,6 @@ private:
 	SSAOBlur_Shader ssaoBlurShader;
 	SSAOBlur_Framebuffer* ssaoBlur = nullptr;
 
-	Equirectangular_to_CubeMap_Shader environmentMapShader;
-	Equirectangular_to_CubeMap_Framebuffer* environmentMap;
-
-	Irradiance_Convolution_Shader irradianceConvolutionShader;
-	Equirectangular_to_CubeMap_Framebuffer* irradianceMap;
-
 	std::vector<Model_Shader> shaderList;
 	std::vector<Model_Shader> animShaderList;
 
@@ -169,7 +180,6 @@ private:
 
 	Billboard_Shader billboardShader;
 	Particle_Shader particleShader;
-
 
 	HDR_Shader hdrShader;
 	HDR_Framebuffer* hdr = nullptr;

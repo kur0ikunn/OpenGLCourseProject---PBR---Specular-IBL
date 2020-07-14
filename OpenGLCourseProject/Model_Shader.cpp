@@ -60,9 +60,12 @@ void Model_Shader::CompileProgram()
 		uniformSpotLight[i].uniformEdge = glGetUniformLocation(shaderID, locBuff);
 	}
 	uniformSkybox = glGetUniformLocation(shaderID, "skybox");
+	uniformAO = glGetUniformLocation(shaderID, "AOMap");
+	uniformIrradiance = glGetUniformLocation(shaderID, "irradianceMap");
+	uniformPrefilter = glGetUniformLocation(shaderID, "prefilterMap");
+	uniformBRDF = glGetUniformLocation(shaderID, "brdfLUT");
 	uniformDirectionalLightTransform = glGetUniformLocation(shaderID, "DirectionalLightTransform");
 	uniformDirectionalShadowMap = glGetUniformLocation(shaderID, "DirectionalShadowMap");
-	uniformAO = glGetUniformLocation(shaderID, "AOMap");
 
 	uniformOmniLightPos = glGetUniformLocation(shaderID, "lightPos");
 	uniformFarPlane = glGetUniformLocation(shaderID, "farPlane");
@@ -127,8 +130,24 @@ void Model_Shader::SetSpotLight(SpotLight* sLight, unsigned int lightCount, unsi
 	}
 }
 
-void Model_Shader::SetSkybox(GLuint textureUnit) {
+void Model_Shader::SetSkybox(GLuint textureUnit)
+{
 	glUniform1i(uniformSkybox, textureUnit);
+}
+
+void Model_Shader::SetIrradianceMap(GLuint textureUnit)
+{
+	glUniform1i(uniformIrradiance, textureUnit);
+}
+
+void Model_Shader::SetPrefilterMap(GLuint textureUnit)
+{
+	glUniform1i(uniformPrefilter, textureUnit);
+}
+
+void Model_Shader::SetBRDFLUT(GLuint textureUnit)
+{
+	glUniform1i(uniformBRDF, textureUnit);
 }
 
 void Model_Shader::SetDirectionalShadowMap(GLuint textureUnit)

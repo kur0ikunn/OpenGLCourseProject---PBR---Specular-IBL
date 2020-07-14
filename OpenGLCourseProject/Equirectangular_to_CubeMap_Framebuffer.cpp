@@ -1,6 +1,6 @@
 #include "Equirectangular_to_CubeMap_Framebuffer.h"
 
-bool Equirectangular_to_CubeMap_Framebuffer::Init(GLuint width, GLuint height)
+bool Equirectangular_to_CubeMap_Framebuffer::Init(GLuint width, GLuint height, bool is_env_map)
 {
 	src_width = width; src_height = height;
 
@@ -21,7 +21,8 @@ bool Equirectangular_to_CubeMap_Framebuffer::Init(GLuint width, GLuint height)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if(is_env_map) glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	else glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -43,6 +44,12 @@ void Equirectangular_to_CubeMap_Framebuffer::Read(GLenum textureUnit)
 {
 	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, buffer);
+}
+
+void Equirectangular_to_CubeMap_Framebuffer::CreateFirstMipFace()
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, buffer);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 }
 
 Equirectangular_to_CubeMap_Framebuffer::~Equirectangular_to_CubeMap_Framebuffer()
