@@ -29,7 +29,7 @@ void Game::init()
 	CreateObject();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 30.0f, 0.2f);
+	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
 
 	environmentTexture = Texture("Textures/HDR/newport_loft.hdr");
 	environmentTexture.LoadTextureHDR();
@@ -173,11 +173,11 @@ void Game::init()
 
 	mainLight = DirectionalLight(2048, 2048,
 		0.5f, 0.5f, 0.5f,
-		-2000.0f, -3000.0f, -1000.0f);
+		2000.0f, -2000.0f, 1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
 		0.1f, 100.0f,
-		0.5f, 0.5f, 0.5f,
+		0.1f, 0.1f, 0.1f,
 		-3.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
 
 	pointLightCount++;
@@ -227,7 +227,7 @@ void Game::init()
 	uniformProjectionAO = ssaoShader.GetProjectionLocation();
 
 	glUniformMatrix4fv(uniformProjectionAO, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniform1f(uniformSampleRadius, 0.5f);
+	glUniform1f(uniformSampleRadius, 0.08f);
 
 	ssaoShader.GenKernel();
 	ssaoShader.GenNoise(ssaoNoiseData);

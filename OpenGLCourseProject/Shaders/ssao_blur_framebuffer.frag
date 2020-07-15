@@ -16,7 +16,7 @@ void main()
     vec3 Color = vec3(0.0, 0.0, 0.0);
 
     for (int i = -2 ; i < 2 ; i++) {
-        for (int j = -2 ; j < 2 ; j++) {
+        for (int j = -2 ; j < 2; j++) {
            vec2 offset = vec2(float(i), float(j)) * texelSize;
            Color += texture(theTexture, TexCoord + offset).r;
         }
