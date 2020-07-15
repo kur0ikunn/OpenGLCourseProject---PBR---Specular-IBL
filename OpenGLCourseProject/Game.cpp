@@ -1370,10 +1370,10 @@ void Game::BloomPass()
 	uniformBlur = hdrShader.GetBlurLocation();
 
 	glUniform1i(uniformHDR, 1);
-	glUniform1f(uniformExposure, 2.0f);
+	glUniform1f(uniformExposure, 1.0f);
 
 	blur->Read(1);
-	glUniform1i(uniformBlur, 1);
+	glUniform1i(uniformBlur, 2.0f);
 	
 	motionBlur->Read(GL_TEXTURE2);
 	hdrShader.SetTexture(2);
