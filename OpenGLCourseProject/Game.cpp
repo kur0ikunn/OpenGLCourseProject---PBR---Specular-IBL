@@ -31,7 +31,7 @@ void Game::init()
 
 	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
 
-	environmentTexture = Texture("Textures/HDR/newport_loft.hdr");
+	environmentTexture = Texture("Textures/HDR/GCanyon_C_YumaPoint_3k.hdr");
 	environmentTexture.LoadTextureHDR();
 
 	brickTexture = Texture("Textures/brick.jpg");
@@ -94,11 +94,11 @@ void Game::init()
 	rustedMetalGlow = Texture("Textures/Glow/rock.jpg");
 	rustedMetalGlow.LoadTexture();
 
-	floorTexture1 = Texture("Textures/rustediron2.png");
-	floorTexture1.LoadTextureSRGBA();
-	floorTextureMetal1 = Texture("Textures/Metallic/rustediron2.png");
+	floorTexture1 = Texture("Textures/rock.jpg");
+	floorTexture1.LoadTextureSRGB();
+	floorTextureMetal1 = Texture("Textures/Metallic/rock.jpg");
 	floorTextureMetal1.LoadTexture();
-	floorTextureRough1 = Texture("Textures/Roughness/rustediron2.png");
+	floorTextureRough1 = Texture("Textures/Roughness/rock.jpg");
 	floorTextureRough1.LoadTexture();
 	floorTextureDisp1 = Texture("Textures/Displacement/d_floor.jpg");
 	floorTextureDisp1.LoadTexture();
@@ -172,13 +172,13 @@ void Game::init()
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
 	mainLight = DirectionalLight(2048, 2048,
-		0.5f, 0.5f, 0.5f,
-		2000.0f, -2000.0f, 1000.0f);
+		1.0f, 1.0f, 1.0f,
+		550.0f, -550.0f, -1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
 		0.1f, 100.0f,
 		0.1f, 0.1f, 0.1f,
-		-3.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
+		6.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
 
 	pointLightCount++;
 
@@ -227,7 +227,7 @@ void Game::init()
 	uniformProjectionAO = ssaoShader.GetProjectionLocation();
 
 	glUniformMatrix4fv(uniformProjectionAO, 1, GL_FALSE, glm::value_ptr(projection));
-	glUniform1f(uniformSampleRadius, 0.08f);
+	glUniform1f(uniformSampleRadius, 0.1f);
 
 	ssaoShader.GenKernel();
 	ssaoShader.GenNoise(ssaoNoiseData);
@@ -1370,7 +1370,7 @@ void Game::BloomPass()
 	uniformBlur = hdrShader.GetBlurLocation();
 
 	glUniform1i(uniformHDR, 1);
-	glUniform1f(uniformExposure, 1.0f);
+	glUniform1f(uniformExposure, 2.0f);
 
 	blur->Read(1);
 	glUniform1i(uniformBlur, 1);

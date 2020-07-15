@@ -21,7 +21,7 @@ private:
 	GLuint uniformNoise = 0;
 	GLuint uniformKernel = 0;
 	GLuint uniformSampleRadius = 0;
-	const static unsigned int KERNEL_SIZE = 16;
+	const static unsigned int KERNEL_SIZE = 8;
 
 	float lerp(float a, float b, float f)
 	{

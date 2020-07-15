@@ -8,8 +8,6 @@ out vec4 FragColor;
 
 uniform sampler2D theTexture;
 
-
-
 void main()
 {
 	vec2 texelSize = 1.0 / vec2(textureSize(theTexture, 0));

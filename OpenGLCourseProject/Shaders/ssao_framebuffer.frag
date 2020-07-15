@@ -11,7 +11,7 @@ uniform sampler2D noise;
 uniform float SampleRad;
 uniform mat4 Projection;
 
-const int MAX_KERNEL_SIZE =16;
+const int MAX_KERNEL_SIZE =8;
 uniform vec3 Kernel[MAX_KERNEL_SIZE];
 
 
@@ -80,7 +80,7 @@ void main()
 
     AO = 1.0 - AO/MAX_KERNEL_SIZE;
 
-    FragColor = vec4(pow(AO,2.0));
+    FragColor = vec4(pow(AO,1.0));
 	
 	//FragColor = texture(noise, TexCoord*noiseScale);
 	
