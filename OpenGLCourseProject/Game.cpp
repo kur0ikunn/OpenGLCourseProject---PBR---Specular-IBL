@@ -1068,6 +1068,22 @@ void Game::PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat de
 	 //clear everything
 	glClear(GL_DEPTH_BUFFER_BIT);  
 
+	terrain_preZPassShader.UseShader();
+	uniformModel2 = terrain_preZPassShader.GetModelLocation();
+	uniformProjection2 = terrain_preZPassShader.GetProjectionLocation();
+	uniformView2 = terrain_preZPassShader.GetViewLocation();
+	uniformEyePosition2 = terrain_preZPassShader.GetEyePositionLocation();
+	uniformDispFactor = terrain_preZPassShader.GetDispFactorLocation();
+	uniformDisplacement = terrain_preZPassShader.GetDisplacementLocation();
+
+	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+
+	terrain_preZPassShader.Validate();
+
+	RenderTerrain();
+
 	static_preZPassShader.UseShader();
 	uniformModel = static_preZPassShader.GetModelLocation();
 	uniformProjection = static_preZPassShader.GetProjectionLocation();
@@ -1092,21 +1108,6 @@ void Game::PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat de
 
 	RenderAnimScene(false, true);
 
-	terrain_preZPassShader.UseShader();
-	uniformModel2 = terrain_preZPassShader.GetModelLocation();
-	uniformProjection2 = terrain_preZPassShader.GetProjectionLocation();
-	uniformView2 = terrain_preZPassShader.GetViewLocation();
-	uniformEyePosition2 = terrain_preZPassShader.GetEyePositionLocation();
-	uniformDispFactor = terrain_preZPassShader.GetDispFactorLocation();
-	uniformDisplacement = terrain_preZPassShader.GetDisplacementLocation();
-
-	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
-
-	terrain_preZPassShader.Validate();
-
-	RenderTerrain();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -1369,7 +1370,7 @@ void Game::BloomPass()
 	uniformBlur = hdrShader.GetBlurLocation();
 
 	glUniform1i(uniformHDR, 1);
-	glUniform1f(uniformExposure, 1.5f);
+	glUniform1f(uniformExposure, 1.0f);
 
 	blur->Read(1);
 	glUniform1i(uniformBlur, 1);
