@@ -41,7 +41,9 @@ void main()
 	
 	float Displacement = texture(displacementMap, (TexCoord.xy)/(dispFactor/0.2f)).x;     
 	
-	 float u = gl_TessCoord.x;
+	vec3 FragPos = Normal * Displacement * -dispFactor;
+	
+	float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;
     float w = gl_TessCoord.z;
 
@@ -51,8 +53,6 @@ void main()
     float uPow2 = pow(u, 2);
     float vPow2 = pow(v, 2);
     float wPow2 = pow(w, 2);
-	
-    vec3 FragPos = Normal * Displacement * -dispFactor;
 	
 	FragPos += oPatch.WorldPos_B300 * wPow3 +
 			oPatch.WorldPos_B030 * uPow3 +
