@@ -174,7 +174,7 @@ void Game::init()
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
 	mainLight = DirectionalLight(2048, 2048,
-		1.0f, 1.0f, 1.0f,
+		4.0f, 4.0f, 4.0f,
 		550.0f, -550.0f, -1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
@@ -1388,7 +1388,7 @@ void Game::BloomPass()
 	glUniform1f(uniformExposure, 1.0f);
 
 	blur->Read(1);
-	glUniform1i(uniformBlur, 2.0f);
+	glUniform1i(uniformBlur, 1.0f);
 	
 	motionBlur->Read(GL_TEXTURE2);
 	hdrShader.SetTexture(2);
