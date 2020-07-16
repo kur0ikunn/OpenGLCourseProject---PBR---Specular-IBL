@@ -188,6 +188,7 @@ void Animated_Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	anim_MeshList.push_back(newMesh);
 	meshToTex.push_back(mesh->mMaterialIndex);
 
+	newMesh = nullptr;
 	LoadMaterials(scene);
 
 	boneTransform(0.0f, prevTransforms);

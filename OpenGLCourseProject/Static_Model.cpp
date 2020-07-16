@@ -73,6 +73,8 @@ void Static_Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	newMesh->CreateMeshNorm(&vertices[0], &indices[0], vertices.size(), indices.size());
 	static_MeshList.push_back(newMesh);
 	meshToTex.push_back(mesh->mMaterialIndex);
+
+	newMesh = nullptr;
 }
 
 void Static_Model::LoadMaterials(const aiScene* scene)
