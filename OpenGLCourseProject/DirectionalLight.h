@@ -17,7 +17,6 @@ public:
 	glm::mat4 CalculateCascadeLightTransform();
 	glm::vec3 GetLightUp();
 	glm::vec3 GetLightDirection();
-	glm::mat4 CalculateLightView();
 	~DirectionalLight();
 private:
 	glm::vec3 direction;

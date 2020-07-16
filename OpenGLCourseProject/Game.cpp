@@ -175,7 +175,7 @@ void Game::init()
 
 	mainLight = new DirectionalLight(2048, 2048,
 		3.0f, 3.0f, 3.0f,
-		550.0f, -550.0f, -1000.0f);
+		5500.0f, -5500.0f, -10000.0f);
 
 	pointLights[0] = new PointLight(1024, 1024,
 		0.1f, 100.0f,
