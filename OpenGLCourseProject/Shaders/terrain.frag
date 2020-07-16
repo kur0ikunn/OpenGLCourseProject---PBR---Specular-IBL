@@ -118,10 +118,10 @@ float CalcDirectionalShadowFactor(int CascadeIndex, DirectionalLight light, vec4
 	vec3 lightDir = normalize(light.direction);
 	
 	float bias = 0.0;
-	if(CascadeIndex>=2) bias = max(0.0001 * (1 - dot(normal, lightDir)), 0.0001);
-	else bias = max(0.00001 * (1 - dot(normal, lightDir)), 0.00001);
-
-		
+	if(CascadeIndex>1) bias = max(0.001 * (1 - dot(normal, lightDir)), 0.0002);
+	else if(CascadeIndex==1) bias = max(0.001 * (1 - dot(normal, lightDir)), 0.0001);
+	else bias = max(0.0001 * (1 - dot(normal, lightDir)), 0.0001);
+	
 	float shadow = 0.0;
 	
 	vec2 texelSize = 1.0/textureSize(directionalShadowMaps[CascadeIndex].shadowMap, 0);
