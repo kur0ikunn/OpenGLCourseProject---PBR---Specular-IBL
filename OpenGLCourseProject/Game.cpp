@@ -174,7 +174,7 @@ void Game::init()
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
 	mainLight = DirectionalLight(2048, 2048,
-		4.0f, 4.0f, 4.0f,
+		3.0f, 3.0f, 3.0f,
 		550.0f, -550.0f, -1000.0f);
 
 	pointLights[0] = PointLight(1024, 1024,
