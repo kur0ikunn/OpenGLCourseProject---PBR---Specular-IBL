@@ -68,7 +68,7 @@ void ShadowMap_Framebuffer::CalcOrthProjs(const glm::mat4& Cam, const glm::mat4*
 	float ar = float(ScreenHeight)/float(ScreenWidth);
 	glm::mat4 CamInv = glm::inverse(Cam);
 
-	float tanHalfHFOV = glm::tan(glm::radians(angle / 2.0f)) / ar;
+	float tanHalfHFOV = glm::tan(glm::radians(angle / 2.0f)) /ar;
 	float tanHalfVFOV = glm::tan(glm::radians(angle * ar / 2.0f)) / ar;
 
 	for (unsigned int i = 0; i < NUM_CASCADES; ++i)

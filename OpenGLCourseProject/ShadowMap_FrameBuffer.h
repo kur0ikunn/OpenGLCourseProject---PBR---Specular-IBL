@@ -23,7 +23,7 @@ private:
 	GLuint buffers[NUM_CASCADES] = { 0 };
 	GLuint fbo[NUM_CASCADES] = { 0 };
 
-	GLfloat cascadeEnd[NUM_CASCADES + 1] = { 0.1f,  25.0f,  100.0f, 1000.0f };
+	GLfloat cascadeEnd[NUM_CASCADES + 1] = { -10.0f,  25.0f,  100.0f, 1000.0f };
 	glm::mat4 shadowOrthoProjInfo[NUM_CASCADES];
 	glm::vec4 modeldFrusCorns[3][8];
 };

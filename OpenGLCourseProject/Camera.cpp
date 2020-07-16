@@ -51,7 +51,7 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange) {
 }
 
 glm::mat4 Camera::calculateViewMatrix() {
-	return glm::lookAt(position, position + front, up);
+	return glm::lookAt(position, position + glm::normalize(front), glm::normalize(up));
 }
 
 glm::mat4 Camera::calculateShadowViewMatrix()
