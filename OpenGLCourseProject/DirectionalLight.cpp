@@ -50,4 +50,9 @@ glm::mat4 DirectionalLight::CalculateLightView()
 }
 
 DirectionalLight::~DirectionalLight() {
+	if (shadowMap != nullptr)
+	{
+		delete shadowMap;
+		shadowMap = nullptr;
+	}
 }

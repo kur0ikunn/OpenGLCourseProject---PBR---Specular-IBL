@@ -198,9 +198,9 @@ private:
 
 	Camera camera;
 
-	DirectionalLight mainLight;
-	PointLight pointLights[MAX_POINT_LIGHTS];
-	SpotLight spotLights[MAX_SPOT_LIGHTS];
+	DirectionalLight* mainLight;
+	PointLight* pointLights[MAX_POINT_LIGHTS];
+	SpotLight* spotLights[MAX_SPOT_LIGHTS];
 
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;

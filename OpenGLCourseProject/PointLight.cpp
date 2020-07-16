@@ -58,4 +58,9 @@ glm::vec3 PointLight::GetPosition()
 }
 
 PointLight::~PointLight() {
+	if (shadowMap != nullptr)
+	{
+		delete shadowMap;
+		shadowMap = nullptr;
+	}
 }

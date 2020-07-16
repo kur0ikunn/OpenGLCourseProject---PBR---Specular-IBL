@@ -173,11 +173,11 @@ void Game::init()
 	motionBlur = new Motion_Blur_FrameBuffer();
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
-	mainLight = DirectionalLight(2048, 2048,
+	mainLight = new DirectionalLight(2048, 2048,
 		3.0f, 3.0f, 3.0f,
 		550.0f, -550.0f, -1000.0f);
 
-	pointLights[0] = PointLight(1024, 1024,
+	pointLights[0] = new PointLight(1024, 1024,
 		0.1f, 100.0f,
 		0.1f, 0.1f, 0.1f,
 		6.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
@@ -191,7 +191,7 @@ void Game::init()
 
 	pointLightCount++;*/
 
-	spotLights[0] = SpotLight(1024, 1024,
+	spotLights[0] = new SpotLight(1024, 1024,
 		0.1f, 100.0f,
 		1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f,
@@ -239,7 +239,7 @@ void Game::init()
 	terrainShader.UseShader();
 	for (size_t i = 0; i < NUM_CASCADES; ++i)
 	{
-		glm::vec4 vView(0.0f, 0.0f, mainLight.GetShadowMap()->GetCascadeEnd(i+1), 1.0f);
+		glm::vec4 vView(0.0f, 0.0f, mainLight->GetShadowMap()->GetCascadeEnd(i+1), 1.0f);
 		glm::vec4 vClip = projection * vView;
 		printf("%F \n", vClip.z);
 		terrainShader.SetCascadeEndClipSpace(i, -vClip.z);
@@ -288,18 +288,18 @@ void Game::update(float fps) {
 	}
 
 	if (mainWindow.getKeys()[GLFW_KEY_L]) {
-		spotLights[0].Toggle();
+		spotLights[0]->Toggle();
 		mainWindow.getKeys()[GLFW_KEY_L] = false;
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	DirectionalShadowMapPass(camera.calculateViewMatrix(), &mainLight);
+	DirectionalShadowMapPass(camera.calculateViewMatrix(), mainLight);
 
 	for (size_t i = 0; i < pointLightCount; i++) {
-		OmniShadowMapPass(&pointLights[i]);
+		OmniShadowMapPass(pointLights[i]);
 	}
 	for (size_t i = 0; i < spotLightCount; i++) {
-		OmniShadowMapPass(&spotLights[i]);
+		OmniShadowMapPass(spotLights[i]);
 	}
 
 	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
@@ -814,7 +814,7 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	gun.prevModel = model;
 
 	model = glm::mat4();
-	model = glm::translate(model, glm::vec3(pointLights[0].GetPosition().x, pointLights[0].GetPosition().y+1.0f, pointLights[0].GetPosition().z));
+	model = glm::translate(model, glm::vec3(pointLights[0]->GetPosition().x, pointLights[0]->GetPosition().y+1.0f, pointLights[0]->GetPosition().z));
 	//model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	//model = glm::rotate(model, 180.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
@@ -987,11 +987,11 @@ void Game::BRDFPass()
 void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light) {
 	
 	testLitView[0] = light->CalculateCascadeLightTransform();
-	mainLight.GetShadowMap()->CalcOrthProjs(camera.calculateViewMatrix(), testLitView, 60.0f);
+	mainLight->GetShadowMap()->CalcOrthProjs(camera.calculateViewMatrix(), testLitView, 60.0f);
 
 	for (unsigned int i = 0; i < 3; ++i)
 	{
-		vView[i] = glm::lookAt(mainLight.GetShadowMap()->GetModlCent(i), mainLight.GetShadowMap()->GetModlCent(i) + glm::normalize(light->GetLightDirection()) * 0.2f, light->GetLightUp());
+		vView[i] = glm::lookAt(mainLight->GetShadowMap()->GetModlCent(i), mainLight->GetShadowMap()->GetModlCent(i) + glm::normalize(light->GetLightDirection()) * 0.2f, light->GetLightUp());
 	}
 	for(size_t i = 0; i< NUM_CASCADES; ++i)
 	{
@@ -1167,7 +1167,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	mainLight.GetShadowMap()->Read(1, GL_TEXTURE2);
+	mainLight->GetShadowMap()->Read(1, GL_TEXTURE2);
 	irradianceMap->Read(GL_TEXTURE8);
 	prefilterMap->Read(GL_TEXTURE9);
 	brdfMap->Read(GL_TEXTURE10);
@@ -1192,17 +1192,17 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-	terrainShader.SetDirectionalLight(&mainLight);
-	terrainShader.SetPointLight(pointLights, pointLightCount, 5, 0);
-	terrainShader.SetSpotLight(spotLights, spotLightCount, 5 + pointLightCount, pointLightCount);
+	terrainShader.SetDirectionalLight(mainLight);
+	terrainShader.SetPointLight(pointLights[0], pointLightCount, 5, 0);
+	terrainShader.SetSpotLight(spotLights[0], spotLightCount, 5 + pointLightCount, pointLightCount);
 
 	for (size_t i = 0; i < NUM_CASCADES; ++i)
 	{
-		glm::mat4 projView = mainLight.GetShadowMap()->GetProjMat(vView[i], i) * vView[i];
+		glm::mat4 projView = mainLight->GetShadowMap()->GetProjMat(vView[i], i) * vView[i];
 		terrainShader.SetDirectionalLightTransforms(i, &projView);
 	}
 
-	terrainShader.SetDirectionalShadowMaps(&mainLight, NUM_CASCADES, 2);
+	terrainShader.SetDirectionalShadowMaps(mainLight, NUM_CASCADES, 2);
 	terrainShader.SetAOMap(14);
 	terrainShader.SetIrradianceMap(8);
 	terrainShader.SetPrefilterMap(9);
@@ -1232,10 +1232,10 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 	glUniform1f(uniformHeightScale, 0.02f);
 
-	shaderList[0].SetDirectionalLight(&mainLight);
-	shaderList[0].SetPointLight(pointLights, pointLightCount, 3, 0);
-	shaderList[0].SetSpotLight(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
-	shaderList[0].SetDirectionalLightTransform(&mainLight.CalculateLightTransform());
+	shaderList[0].SetDirectionalLight(mainLight);
+	shaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
+	shaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
+	shaderList[0].SetDirectionalLightTransform(&(mainLight->CalculateLightTransform()));
 
 	shaderList[0].SetDirectionalShadowMap(2);
 	shaderList[0].SetIrradianceMap(8);
@@ -1268,10 +1268,10 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	glUniform1f(uniformHeightScale1, 0.0f);
 
-	animShaderList[0].SetDirectionalLight(&mainLight);
-	animShaderList[0].SetPointLight(pointLights, pointLightCount, 3, 0);
-	animShaderList[0].SetSpotLight(spotLights, spotLightCount, 3 + pointLightCount, pointLightCount);
-	animShaderList[0].SetDirectionalLightTransform(&mainLight.CalculateLightTransform());
+	animShaderList[0].SetDirectionalLight(mainLight);
+	animShaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
+	animShaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
+	animShaderList[0].SetDirectionalLightTransform(&(mainLight->CalculateLightTransform()));
 
 	animShaderList[0].SetDirectionalShadowMap(2);
 	animShaderList[0].SetAOMap(14);
@@ -1324,7 +1324,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	glm::vec3 lowerLight = camera.getCameraPosition();
 	lowerLight.y -= 0.1f;
-	spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+	spotLights[0]->SetFlash(lowerLight, camera.getCameraDirection());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -1402,12 +1402,29 @@ Game::~Game()
 {
 	for (auto a : meshList) {
 		delete a;
+		a = nullptr;
 	}
 	for (auto a : billboardList) {
 		delete a;
+		a = nullptr;
 	}
 	for (auto a : particleList) {
 	    delete a;
+		a = nullptr;
+	}
+	if (mainLight != nullptr) {
+		delete mainLight;
+		mainLight = nullptr;
+	}
+	for(auto a: pointLights)
+	{
+		delete a;
+		a=nullptr;
+	}
+	for (auto a : spotLights)
+	{
+		delete a;
+		a = nullptr;
 	}
 
 	if (depth != nullptr) {
