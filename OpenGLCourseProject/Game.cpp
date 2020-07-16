@@ -130,6 +130,8 @@ void Game::init()
 	
 	sniper.LoadModel("Models/Sniper_rifle_KSR-29.fbx");
 
+	gun.LoadModel("Models/Cerberus_LP.fbx");
+
 	anymodel.LoadModel("Models/Intergalactic_Spaceship-(Wavefront).obj");
 
 	bulb.LoadModel("Models/Free_Antique_Bulb.obj");
@@ -797,6 +799,19 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	sniper.RenderModel();
 	sniper.prevModel = model;
+
+	model = glm::mat4();
+	//model = glm::rotate(model, -aircraftAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(5.0f-terrainScaleFactor, 33.0f, 10.0f - terrainScaleFactor));
+	model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+	prevPVM = prevProjView * gun.prevModel;
+	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
+	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	gun.RenderModel();
+	gun.prevModel = model;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(pointLights[0].GetPosition().x, pointLights[0].GetPosition().y+1.0f, pointLights[0].GetPosition().z));

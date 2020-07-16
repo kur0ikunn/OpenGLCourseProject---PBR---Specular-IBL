@@ -262,6 +262,7 @@ private:
 	Material dullTerrainMaterial;
 
 	Static_Model sniper;
+	Static_Model gun;
 	Static_Model anymodel;
 	Static_Model bulb;
 	Static_Model cube;
