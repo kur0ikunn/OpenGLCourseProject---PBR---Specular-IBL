@@ -94,14 +94,21 @@ void Game::init()
 	rustedMetalGlow = Texture("Textures/Glow/rock.jpg");
 	rustedMetalGlow.LoadTexture();
 
-	floorTexture1 = Texture("Textures/rock.jpg");
-	floorTexture1.LoadTextureSRGB();
-	floorTextureMetal1 = Texture("Textures/Metallic/rock.jpg");
-	floorTextureMetal1.LoadTexture();
-	floorTextureRough1 = Texture("Textures/Roughness/rock.jpg");
-	floorTextureRough1.LoadTexture();
-	floorTextureDisp1 = Texture("Textures/Displacement/d_floor.jpg");
-	floorTextureDisp1.LoadTexture();
+	terrainTextureDisp = Texture("Textures/Displacement/terrain.jpg");
+	terrainTextureDisp.LoadTexture();
+	terrainTextureBlend = Texture("Textures/Blend/terrain.jpg");
+	terrainTextureBlend.LoadTexture();
+	terrainTexture = Texture("Textures/terrain");
+	terrainTexture.LoadTextureArray(true);
+	terrainTextureMetal = Texture("Textures/Metallic/terrain");
+	terrainTextureMetal.LoadTextureArray(false);
+	terrainTextureRough = Texture("Textures/Roughness/terrain");
+	terrainTextureRough.LoadTextureArray(false);
+	terrainTextureNorm = Texture("Textures/Normal/terrain");
+	terrainTextureNorm.LoadTextureArray(false);
+	terrainTexturePara = Texture("Textures/Parallax/terrain");
+	terrainTexturePara.LoadTextureArray(false);
+
 
 	shinyMaterialGlow = Material(1, 6, 7, 11, 12, 13);
 	dullMaterialGlow = Material(1, 6, 7, 11, 12, 13);
@@ -121,8 +128,8 @@ void Game::init()
 	shinyMaterial = Material(1, 1);
 	dullMaterial = Material(1, 1);
 	
-	shinyTerrainMaterial = Material(1, 11, 12, 13);
-	dullTerrainMaterial = Material(1, 11, 12, 13);
+	shinyTerrainMaterial = Material(12, 13, 15, 16, 17);
+	dullTerrainMaterial = Material(12, 13, 15, 16, 17);
 	
 	cube.LoadModel("Models/cube.obj");
 
@@ -573,7 +580,7 @@ void Game::RenderParticlesScene(GLfloat deltaTime)
 	particleList[0]->RenderParticlesMeshCPU();
 }
 
-void Game::RenderTerrain()
+void Game::RenderTerrain(bool shadow, bool depth)
 {
 	glUniform1f(uniformDispFactor,(0.2f*terrainScaleFactor1));
 
@@ -585,11 +592,27 @@ void Game::RenderTerrain()
 	glUniformMatrix4fv(uniformModel2, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * terrainList[0]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM2, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	floorTexture1.UseTexture(0);
-	floorTextureMetal1.UseTexture(10);
-	floorTextureDisp1.UseTexture(11);
-	floorTextureRough1.UseTexture(12);
-	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformDisplacement, uniformRoughnessMap2);
+	terrainTextureDisp.UseTexture(0);
+	terrainTextureBlend.UseTexture(10);
+	if(shadow)
+	{
+		terrainDirectionalShadowShader.SetDisplacementMap(1);
+	}
+	else if (depth) 
+	{
+		terrain_preZPassShader.SetDisplacementMap(1);
+	}
+	else 
+	{
+		terrainShader.SetDisplacementMap(1);
+	}
+	terrainShader.SetBlendMap(11);
+	terrainTexture.UseTextureArray(11);
+	terrainTextureMetal.UseTextureArray(12);
+	terrainTextureNorm.UseTextureArray(14);
+	terrainTextureRough.UseTextureArray(15);
+	terrainTexturePara.UseTextureArray(16);
+	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformNormalMap2, uniformRoughnessMap2, uniformParallaxMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
 	terrainList[0]->prevMesh = model;	
@@ -803,6 +826,7 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	model = glm::mat4();
 	//model = glm::rotate(model, -aircraftAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(5.0f-terrainScaleFactor, 33.0f, 10.0f - terrainScaleFactor));
+	model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
@@ -1025,14 +1049,13 @@ void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* ligh
 		uniformModel2 = terrainDirectionalShadowShader.GetModelLocation();
 		uniformEyePosition2 = terrainDirectionalShadowShader.GetEyePositionLocation();
 		uniformDispFactor = terrainDirectionalShadowShader.GetDispFactorLocation();
-		uniformDisplacement = terrainDirectionalShadowShader.GetDisplacementLocation();
 
 		terrainDirectionalShadowShader.SetDirectionalLightTransform(&projView);
 		glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 		terrainDirectionalShadowShader.Validate();
 
-		RenderTerrain();
+		RenderTerrain(true, false);
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -1089,7 +1112,6 @@ void Game::PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat de
 	uniformView2 = terrain_preZPassShader.GetViewLocation();
 	uniformEyePosition2 = terrain_preZPassShader.GetEyePositionLocation();
 	uniformDispFactor = terrain_preZPassShader.GetDispFactorLocation();
-	uniformDisplacement = terrain_preZPassShader.GetDisplacementLocation();
 
 	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -1097,7 +1119,7 @@ void Game::PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat de
 
 	terrain_preZPassShader.Validate();
 
-	RenderTerrain();
+	RenderTerrain(false, true);
 
 	static_preZPassShader.UseShader();
 	uniformModel = static_preZPassShader.GetModelLocation();
@@ -1183,10 +1205,11 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	uniformPrevPVM2 = terrainShader.GetPrevPVMLocation();
 	uniformEyePosition2 = terrainShader.GetEyePositionLocation();
 	uniformDispFactor = terrainShader.GetDispFactorLocation();
-	uniformDisplacement = terrainShader.GetDisplacementLocation();
 	uniformAlbedoMap2 = terrainShader.GetAlbedoLocation();
 	uniformMetallicMap2 = terrainShader.GetMetallicLocation();
+	uniformNormalMap2 = terrainShader.GetNormalLocation();
 	uniformRoughnessMap2 = terrainShader.GetRoughnessLocation();
+	uniformParallaxMap2 = terrainShader.GetParallaxLocation();
 
 	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
@@ -1210,7 +1233,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 
 	terrainShader.Validate();
 
-	RenderTerrain();
+	RenderTerrain(false, false);
 
 	shaderList[0].UseShader();
 

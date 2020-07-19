@@ -31,7 +31,8 @@ struct OutputPatch
 in patch OutputPatch oPatch;  
 
 out vec3 FragPos;                                                                        
-out vec2 TexCoord;                                                                        
+out vec2 TexCoord;
+out vec2 TexCoordTerr;                                                                        
 out vec3 Normal; 
 out vec4 DirectionalLightSpacePos[NUM_CASCADES]; 
 out float ClipSpacePosZ;  
@@ -71,6 +72,8 @@ void main()
     TexCoord = interpolate2D(oPatch.TexCoord[0], oPatch.TexCoord[1], oPatch.TexCoord[2]);
     Normal = interpolate3D(oPatch.Normal[0], oPatch.Normal[1], oPatch.Normal[2]);
 	
+	TexCoordTerr = TexCoord.xy/(dispFactor/0.2f);
+	
 	float Displacement = texture(displacementMap, (TexCoord.xy)/(dispFactor/0.2f)).x;     
 	FragPos = Normal * Displacement * -dispFactor;
 	
@@ -101,6 +104,7 @@ void main()
 	for (int i = 0 ; i < NUM_CASCADES ; i++) {
        DirectionalLightSpacePos[i] = DirectionalLightTransforms[i]* vec4(FragPos, 1.0);
     }
+	
 	TexCoord = TexCoord.xy/(dispFactor*0.07f); 
 	
 	vec4 ClipSpacePosition= Projection* View* vec4(FragPos, 1.0);  

@@ -2,6 +2,7 @@
 const int NUM_CASCADES = 3;
 											
 in vec2 TexCoord;
+in vec2 TexCoordTerr;
 in vec3 Normal;
 in vec3 FragPos;
 
@@ -68,9 +69,11 @@ struct DirectionalShadowMaps
 
 struct Material
 {
-    sampler2D roughnessMap;
-	sampler2D metallicMap;
-	sampler2D albedoMap;
+	sampler2DArray parallaxMap;
+    sampler2DArray roughnessMap;
+	sampler2DArray normalMap;
+	sampler2DArray metallicMap;
+	sampler2DArray albedoMap;
 };
 
 uniform int PointLightCount;
@@ -86,6 +89,7 @@ uniform sampler2D brdfLUT;
 uniform float CascadeEndClipSpace[NUM_CASCADES];
 uniform DirectionalShadowMaps directionalShadowMaps[NUM_CASCADES];
 uniform sampler2D AOMap;
+uniform sampler2D blendMap;
 uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
 
 uniform Material material;
@@ -325,13 +329,24 @@ vec4 CalcSpotLights()
 	
 	return totalColor;
 }
-	
+
+vec3 CalcMultipleTexture(sampler2DArray mat, vec3 color, float amnt)
+{
+	vec3 bgrTextureColor = texture(mat, vec3(TexCoord,0)).rgb * amnt; 
+	vec3 rTextureColor = texture(mat, vec3(TexCoord,1)).rgb * color.r;
+	vec3 gTextureColor = texture(mat, vec3(TexCoord,2)).rgb * color.g;
+	vec3 bTextureColor = texture(mat, vec3(TexCoord,3)).rgb * color.b;
+	return bgrTextureColor+rTextureColor+gTextureColor+bTextureColor;
+}	
 	
 void main()												
 {
-	albedo = texture(material.albedoMap, TexCoord).rgb;
-	metallic = texture(material.metallicMap, TexCoord).r;
-	roughness = texture(material.roughnessMap, TexCoord).r;
+	vec3 blendMapColor = texture(blendMap, TexCoordTerr).rgb;
+	float bgrTxtreAmnt = 1-(blendMapColor.r+blendMapColor.g+blendMapColor.b);
+	
+	albedo = CalcMultipleTexture(material.albedoMap, blendMapColor, bgrTxtreAmnt);
+	metallic =  CalcMultipleTexture(material.metallicMap, blendMapColor, bgrTxtreAmnt).r;
+	roughness =  CalcMultipleTexture(material.roughnessMap, blendMapColor, bgrTxtreAmnt).r;
 	N = normalize(Normal);
 	V = normalize(FragPos-eyePosition);
 	vec3 R = reflect(V,N);

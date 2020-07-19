@@ -97,6 +97,49 @@ bool Texture::LoadTexture()
 	return true;
 }
 
+bool Texture::LoadTextureArray(bool is_SRGB)
+{
+	stbi_set_flip_vertically_on_load(false);
+
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+
+	GLenum intFormat;
+
+	if (is_SRGB) {
+		intFormat = GL_SRGB8;
+	}
+	else {
+		intFormat = GL_RGB8;
+	}
+
+	// Allocate the storage.
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, intFormat, 1024, 1024, NUM_TERRAIN_LAYERS);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, NUM_TERRAIN_LAYERS);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+	unsigned char* texData[NUM_TERRAIN_LAYERS] = {nullptr};
+	for (int i = 0; i < NUM_TERRAIN_LAYERS; ++i)
+	{
+		std::string loc = fileLocation+std::to_string(i) + ".jpg";
+		
+		texData[i] = stbi_load(loc.c_str(), &width, &height, &bitDepth, 0);
+
+		if (!texData[i]) {
+			printf("Failed ot find: %s\n", loc.c_str());
+			return false;
+		}
+
+		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGB, GL_UNSIGNED_BYTE, texData[i]);
+		stbi_image_free(texData[i]);
+	}
+	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	return true;
+}
 
 bool Texture::LoadTextureSRGB()
 {
@@ -225,6 +268,11 @@ bool Texture::GenerateNoiseTexture(std::vector<glm::vec3>& noiseData)
 void Texture::UseTexture(unsigned int i) {
 	glActiveTexture(GL_TEXTURE1+i);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void Texture::UseTextureArray(unsigned int i) {
+	glActiveTexture(GL_TEXTURE1 + i);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
 }
 
 void Texture::UseCubeMap(unsigned int i)

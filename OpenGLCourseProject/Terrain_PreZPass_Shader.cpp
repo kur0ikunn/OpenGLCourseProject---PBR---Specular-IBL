@@ -20,6 +20,12 @@ void Terrain_PreZPass_Shader::CompileProgram()
 	uniformDispFactor = glGetUniformLocation(shaderID, "dispFactor");
 }
 
+void Terrain_PreZPass_Shader::SetDisplacementMap(GLuint textureUnit)
+{
+	glUniform1i(uniformDisplacement, textureUnit);
+}
+
+
 Terrain_PreZPass_Shader::~Terrain_PreZPass_Shader()
 {
 	ClearShader();

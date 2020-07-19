@@ -13,5 +13,6 @@ const int ScreenHeight = 1080;
 const int NUM_CASCADES = 3;
 const int NUM_FRUSTUM_CORNERS = 8;
 const int NUM_OBJECTS = 3;
+const int NUM_TERRAIN_LAYERS = 4;
 
 #endif

@@ -89,7 +89,7 @@ private:
 	void CreateShaders();
 	void RenderBillboardScene();
 	void RenderParticlesScene(GLfloat deltaTime);
-	void RenderTerrain();
+	void RenderTerrain(bool  shadow, bool depth);
 	void RenderEnvCubeMap(bool is_cubeMap);
 	void RenderScene(glm::mat4 projectionMatrix = glm::mat4(), glm::mat4 viewMatrix = glm::mat4());
 	void RenderAnimScene(bool shadow, bool depth);
@@ -125,8 +125,8 @@ private:
 
 	GLuint uniformBones[MAX_BONES] = { 0 };
 
-	GLuint uniformModel2 = 0, uniformProjection2 = 0, uniformView2 = 0, uniformPrevPVM2 = 0, uniformEyePosition2 = 0, uniformDispFactor = 0, uniformDisplacement = 0,
-		uniformAlbedoMap2 = 0, uniformMetallicMap2 = 0, uniformRoughnessMap2 = 0,
+	GLuint uniformModel2 = 0, uniformProjection2 = 0, uniformView2 = 0, uniformPrevPVM2 = 0, uniformEyePosition2 = 0, uniformDispFactor = 0,
+		uniformAlbedoMap2 = 0, uniformMetallicMap2 = 0, uniformRoughnessMap2 = 0, uniformNormalMap2 = 0, uniformParallaxMap2 = 0,
 		uniformOmniLightPos2 = 0, uniformFarPlane2 = 0;
 
 	GLuint uniformProjection0 = 0, uniformView0 = 0, uniformPrevPV0 = 0, uniformCameraUp = 0, uniformCameraRight = 0, uniformPos = 0, uniformSize = 0;
@@ -235,10 +235,13 @@ private:
 	Texture rustedMetalPara;
 	Texture rustedMetalGlow;
 
-	Texture floorTexture1;
-	Texture floorTextureMetal1;
-	Texture floorTextureRough1;
-	Texture floorTextureDisp1;
+	Texture terrainTextureDisp;
+	Texture terrainTextureBlend;
+	Texture	terrainTexture;
+	Texture terrainTextureMetal;
+	Texture terrainTextureRough;
+	Texture terrainTextureNorm;
+	Texture terrainTexturePara;
 
 	Texture SSAONoiseTexture;
 

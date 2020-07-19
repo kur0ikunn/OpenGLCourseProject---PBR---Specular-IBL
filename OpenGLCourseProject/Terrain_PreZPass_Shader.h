@@ -8,8 +8,9 @@ public:
 
 	~Terrain_PreZPass_Shader();
 
-	GLuint GetDisplacementLocation() { return uniformDisplacement; }
+	void SetDisplacementMap(GLuint textureUnit);
 	GLuint GetDispFactorLocation() { return uniformDispFactor; }
+
 
 private:
 	void CompileProgram();

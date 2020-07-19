@@ -20,6 +20,7 @@ public:
 	void UseMaterial(GLuint albedoLocation, GLuint metallicLocation, GLuint normalLocation, GLuint roughLocation);
 	void UseMaterial(GLuint albedoLocation, GLuint metallicLocation, GLuint normalLocation, GLuint roughLocation, GLuint parallaxLocation);
 	void UseMaterial(GLuint albedoLocation, GLuint metallicLocation, GLuint normalLocation, GLuint roughLocation, GLuint parallaxLocation, GLuint glowLocation);
+
 	~Material();
 
 private:

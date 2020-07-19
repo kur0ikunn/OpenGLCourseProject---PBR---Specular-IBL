@@ -21,8 +21,11 @@ void Terrain_Shader::CompileProgram()
 	uniformDirectionalLight.uniformDirection = glGetUniformLocation(shaderID, "directionalLight.direction");
 	uniformEyePosition = glGetUniformLocation(shaderID, "eyePosition");
 	uniformDispFactor = glGetUniformLocation(shaderID, "dispFactor");
+	uniformBlend = glGetUniformLocation(shaderID, "blendMap");
 	uniformAlbedo = glGetUniformLocation(shaderID, "material.albedoMap");
 	uniformMetallic = glGetUniformLocation(shaderID, "material.metallicMap");
+	uniformNormal = glGetUniformLocation(shaderID, "material.normalMap");
+	uniformParallax = glGetUniformLocation(shaderID, "material.parallaxMap");
 	uniformDisplacement = glGetUniformLocation(shaderID, "displacementMap");
 	uniformRoughness = glGetUniformLocation(shaderID, "material.roughnessMap");
 
@@ -163,6 +166,16 @@ void Terrain_Shader::SetDirectionalShadowMaps(Light* light, unsigned int i, GLui
 		light->GetShadowMap()->Read(j, GL_TEXTURE2);
 		glUniform1i(uniformDirectionalShadowMaps[j].shadowMap, textureUnit + j);
 	}
+}
+
+void Terrain_Shader::SetBlendMap(GLuint textureUnit)
+{
+	glUniform1i(uniformBlend, textureUnit);
+}
+
+void Terrain_Shader::SetDisplacementMap(GLuint textureUnit)
+{
+	glUniform1i(uniformDisplacement, textureUnit);
 }
 
 void Terrain_Shader::SetAOMap(GLuint textureUnit)

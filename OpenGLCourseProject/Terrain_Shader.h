@@ -14,6 +14,8 @@ public:
 	void SetPointLight(PointLight* pLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
 	void SetSpotLight(SpotLight* sLight, unsigned int lightCount, unsigned int textureUnit, unsigned int offset);
 	void SetDirectionalShadowMaps(Light* light, unsigned int i,GLuint textureUnit);
+	void SetBlendMap(GLuint textureUnit);
+	void SetDisplacementMap(GLuint textureUnit);
 	void SetAOMap(GLuint textureUnit);
 	void SetIrradianceMap(GLuint textureUnit);
 	void SetPrefilterMap(GLuint textureUnit);
@@ -26,6 +28,7 @@ public:
 	~Terrain_Shader();
 private:
 	void CompileProgram();
+	GLuint uniformBlend = 0;
 	GLuint uniformDispFactor = 0;
 	GLuint uniformDisplacement = 0;
 	GLuint uniformDirectionalLightTransforms[NUM_CASCADES] = { 0 };
