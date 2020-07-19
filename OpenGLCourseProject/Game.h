@@ -125,7 +125,7 @@ private:
 
 	GLuint uniformBones[MAX_BONES] = { 0 };
 
-	GLuint uniformModel2 = 0, uniformProjection2 = 0, uniformView2 = 0, uniformPrevPVM2 = 0, uniformEyePosition2 = 0, uniformDispFactor = 0,
+	GLuint uniformModel2 = 0, uniformProjection2 = 0, uniformView2 = 0, uniformPrevPVM2 = 0, uniformEyePosition2 = 0, uniformHeightScale2 = 0, uniformDispFactor = 0,
 		uniformAlbedoMap2 = 0, uniformMetallicMap2 = 0, uniformRoughnessMap2 = 0, uniformNormalMap2 = 0, uniformParallaxMap2 = 0,
 		uniformOmniLightPos2 = 0, uniformFarPlane2 = 0;
 

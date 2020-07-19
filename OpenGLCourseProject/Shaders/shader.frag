@@ -4,7 +4,6 @@ in vec4 vCol;
 in vec2 TexCoord;
 in vec3 Normal;
 in mat3 TBN;
-in mat3 TBN2;
 in vec3 FragPos;
 in vec4 DirectionalLightSpacePos;
 
@@ -320,7 +319,7 @@ vec3 CalcBumpedNormal()
 vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord)
 {
 	// number of depth layers
-    const float numLayers = 100;
+    const float numLayers = 5;
     // calculate the size of each layer
     float layerDepth = 1.0 / numLayers;
     // depth of current layer

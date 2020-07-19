@@ -25,6 +25,7 @@ struct OutputPatch
     vec3 WorldPos_B120;
     vec3 WorldPos_B111;
     vec3 Normal[3];
+	vec3 Tangent[3];
     vec2 TexCoord[3];
 };
 
@@ -34,6 +35,7 @@ out vec3 FragPos;
 out vec2 TexCoord;
 out vec2 TexCoordTerr;                                                                        
 out vec3 Normal; 
+out mat3 TBN;
 out vec4 DirectionalLightSpacePos[NUM_CASCADES]; 
 out float ClipSpacePosZ;  
 
@@ -66,12 +68,29 @@ vec3 GetNormal(vec2 uv)
   return n;
 } 
  
+ mat3 CalcTBN(vec3 Normal, vec3 Tangent)
+{
+	vec3 normal = normalize(Normal);
+    vec3 tangent = normalize(Tangent);
+	tangent = normalize(tangent - normal*dot(normal, tangent));
+	vec3 Bitangent = cross(normal, tangent);
+	
+	if (dot(cross(normal, tangent), Bitangent) < 0.0f){
+		tangent = tangent * -1.0f;
+	}
+	
+	mat3 TBN = mat3(tangent, Bitangent, normal);
+	
+	return TBN;
+}	
+
+ 
 void main()                                                                                     
 {          	
     // Interpolate the attributes of the output vertex using the barycentric coordinates
     TexCoord = interpolate2D(oPatch.TexCoord[0], oPatch.TexCoord[1], oPatch.TexCoord[2]);
     Normal = interpolate3D(oPatch.Normal[0], oPatch.Normal[1], oPatch.Normal[2]);
-	
+	vec3 Tangent = interpolate3D(oPatch.Tangent[0], oPatch.Tangent[1], oPatch.Tangent[2]);
 	TexCoordTerr = TexCoord.xy/(dispFactor/0.2f);
 	
 	float Displacement = texture(displacementMap, (TexCoord.xy)/(dispFactor/0.2f)).x;     
@@ -106,6 +125,8 @@ void main()
     }
 	
 	TexCoord = TexCoord.xy/(dispFactor*0.07f); 
+	
+	TBN = CalcTBN(Normal, Tangent);
 	
 	vec4 ClipSpacePosition= Projection* View* vec4(FragPos, 1.0);  
 

@@ -21,6 +21,7 @@ void Terrain_Shader::CompileProgram()
 	uniformDirectionalLight.uniformDirection = glGetUniformLocation(shaderID, "directionalLight.direction");
 	uniformEyePosition = glGetUniformLocation(shaderID, "eyePosition");
 	uniformDispFactor = glGetUniformLocation(shaderID, "dispFactor");
+	uniformHeightScale = glGetUniformLocation(shaderID, "height_scale");
 	uniformBlend = glGetUniformLocation(shaderID, "blendMap");
 	uniformAlbedo = glGetUniformLocation(shaderID, "material.albedoMap");
 	uniformMetallic = glGetUniformLocation(shaderID, "material.metallicMap");

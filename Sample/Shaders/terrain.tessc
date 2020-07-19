@@ -9,7 +9,8 @@ uniform float dispFactor;
 // attributes of the input CPs                                                                  
 in vec3 WorldPos_CS_in[];                                                                        
 in vec2 TexCoord_CS_in[];                                                                       
-in vec3 Normal_CS_in[];                                                                      
+in vec3 Normal_CS_in[];   
+in vec3 Tangent_CS_in[];                                                                   
 
 struct OutputPatch                                                                              
 {                                                                                               
@@ -23,7 +24,8 @@ struct OutputPatch
     vec3 WorldPos_B210;                                                                         
     vec3 WorldPos_B120;                                                                         
     vec3 WorldPos_B111;
-    vec3 Normal[3];                                                                             
+    vec3 Normal[3]; 
+	vec3 Tangent[3];
     vec2 TexCoord[3];                                                                           
 };                                                                                              
 
@@ -93,6 +95,7 @@ void main()
     for (int i = 0 ; i < 3 ; i++) {
        oPatch.Normal[i] = Normal_CS_in[i];
        oPatch.TexCoord[i] = TexCoord_CS_in[i];
+	   oPatch.Tangent[i] = Tangent_CS_in[i];
     }                         
 
 	CalcPositions();

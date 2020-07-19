@@ -4,6 +4,7 @@ const int NUM_CASCADES = 3;
 in vec2 TexCoord;
 in vec2 TexCoordTerr;
 in vec3 Normal;
+in mat3 TBN;
 in vec3 FragPos;
 
 in vec4 DirectionalLightSpacePos[NUM_CASCADES];
@@ -22,6 +23,9 @@ const int MAX_SPOT_LIGHTS = 3;
 const float MAX_REFLECTION_LOD = 4.0;
 
 const float PI = 3.14159265359;
+
+vec3 NewNormal;
+vec2 NewTexCoord;
 
 vec4 CascadeIndicator = vec4(0.0, 0.0, 0.0, 0.0);
 
@@ -95,6 +99,8 @@ uniform OmniShadowMap omniShadowMaps[MAX_POINT_LIGHTS + MAX_SPOT_LIGHTS];
 uniform Material material;
 
 uniform vec3 eyePosition;
+
+uniform float height_scale;
 
 vec3 sampleOffsetDirections[20] = vec3[]
 (
@@ -282,7 +288,7 @@ vec4 CalcPointLight(PointLight pLight, int shadowIndex)
 	float distance = length(direction);
 	direction = normalize(direction);
 	
-	vec3 normal = normalize(Normal);
+	vec3 normal = normalize(NewNormal);
 	float bias = max(0.5 * (1 - dot(normal, direction)), 0.1);
 	
 	float shadowFactor = CalcOmniShadowFactor(pLight, shadowIndex, bias);
@@ -330,24 +336,80 @@ vec4 CalcSpotLights()
 	return totalColor;
 }
 
-vec3 CalcMultipleTexture(sampler2DArray mat, vec3 color, float amnt)
+vec3 CalcMultipleTexture(sampler2DArray mat, vec2 texCoord, vec3 color, float amnt)
 {
-	vec3 bgrTextureColor = texture(mat, vec3(TexCoord,0)).rgb * amnt; 
-	vec3 rTextureColor = texture(mat, vec3(TexCoord,1)).rgb * color.r;
-	vec3 gTextureColor = texture(mat, vec3(TexCoord,2)).rgb * color.g;
-	vec3 bTextureColor = texture(mat, vec3(TexCoord,3)).rgb * color.b;
+	vec3 bgrTextureColor = texture(mat, vec3(texCoord,0)).rgb * amnt; 
+	vec3 rTextureColor = texture(mat, vec3(texCoord,1)).rgb * color.r;
+	vec3 gTextureColor = texture(mat, vec3(texCoord,2)).rgb * color.g;
+	vec3 bTextureColor = texture(mat, vec3(texCoord,3)).rgb * color.b;
 	return bgrTextureColor+rTextureColor+gTextureColor+bTextureColor;
 }	
+
+vec3 CalcBumpedNormal(vec3 Color, float Amnt)
+{
+    vec3 BumpMapNormal = CalcMultipleTexture(material.normalMap, NewTexCoord, Color, Amnt);
+    BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+    vec3 newNormal;
+    newNormal = TBN*BumpMapNormal;
+    newNormal = normalize(newNormal);
+    return newNormal;
+}
+
+vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord,vec3 Color, float Amnt)
+{
+	// number of depth layers
+    const float numLayers = 5;
+    // calculate the size of each layer
+    float layerDepth = 1.0 / numLayers;
+    // depth of current layer
+    float currentLayerDepth = 0.0;
+    // the amount to shift the texture coordinates per layer (from vector P)
+    vec2 P = viewDir.xy* -height_scale; 
+    vec2 deltaTexCoords = P / numLayers;
+	
+	// get initial values
+	vec2  currentTexCoords     = TexCoord;
+	float currentDepthMapValue = CalcMultipleTexture(material.parallaxMap,currentTexCoords, Color, Amnt).r;
+	  
+	while(currentLayerDepth < currentDepthMapValue)
+	{
+		// shift texture coordinates along direction of P
+		currentTexCoords -= deltaTexCoords;
+		// get depthmap value at current texture coordinates
+		currentDepthMapValue = CalcMultipleTexture(material.parallaxMap,currentTexCoords, Color, Amnt).r;  
+		// get depth of next layer
+		currentLayerDepth += layerDepth;  
+	}
+
+	// get texture coordinates before collision (reverse operations)
+	vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+
+	// get depth after and before collision for linear interpolation
+	float afterDepth  = currentDepthMapValue - currentLayerDepth;
+	float beforeDepth = CalcMultipleTexture(material.parallaxMap, prevTexCoords, Color, Amnt).r - currentLayerDepth + layerDepth;
+
+	// interpolation of texture coordinates
+	float weight = afterDepth / (afterDepth - beforeDepth);
+	vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return finalTexCoords;  
+	
+}
 	
 void main()												
 {
 	vec3 blendMapColor = texture(blendMap, TexCoordTerr).rgb;
 	float bgrTxtreAmnt = 1-(blendMapColor.r+blendMapColor.g+blendMapColor.b);
+
+	vec3 viewDir = normalize(transpose(TBN)*(eyePosition-FragPos));
+	NewTexCoord = CalcParallaxMapping(viewDir, TexCoord, blendMapColor, bgrTxtreAmnt);
+
+	NewNormal = CalcBumpedNormal(blendMapColor, bgrTxtreAmnt);
 	
-	albedo = CalcMultipleTexture(material.albedoMap, blendMapColor, bgrTxtreAmnt);
-	metallic =  CalcMultipleTexture(material.metallicMap, blendMapColor, bgrTxtreAmnt).r;
-	roughness =  CalcMultipleTexture(material.roughnessMap, blendMapColor, bgrTxtreAmnt).r;
-	N = normalize(Normal);
+	albedo = CalcMultipleTexture(material.albedoMap,NewTexCoord, blendMapColor, bgrTxtreAmnt);
+	metallic =  CalcMultipleTexture(material.metallicMap,NewTexCoord, blendMapColor, bgrTxtreAmnt).r;
+	roughness =  CalcMultipleTexture(material.roughnessMap,NewTexCoord, blendMapColor, bgrTxtreAmnt).r;
+	N = NewNormal;
 	V = normalize(FragPos-eyePosition);
 	vec3 R = reflect(V,N);
 	F0 = mix(F0, albedo, metallic);

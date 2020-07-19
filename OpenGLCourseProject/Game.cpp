@@ -447,16 +447,17 @@ void Game::CreateTerrain()
 	};
 
 	GLfloat terrainVertices[] = {
-		-terrainScaleFactor1, 0.0f,-terrainScaleFactor1,		0.0f, 0.0f,								        0.0f, 0.0f, 0.0f,
-		terrainScaleFactor1, 0.0f,-terrainScaleFactor1,			terrainScaleFactor1, 0.0f,						0.0f, 0.0f, 0.0f,
-		-terrainScaleFactor1, 0.0f, terrainScaleFactor1,		0.0f, terrainScaleFactor1,						0.0f, 0.0f, 0.0f,
-		terrainScaleFactor1, 0.0f,terrainScaleFactor1,			terrainScaleFactor1, terrainScaleFactor1,	    0.0f, 0.0f, 0.0f,
+		-terrainScaleFactor1, 0.0f,-terrainScaleFactor1,		0.0f, 0.0f,								        0.0f, 0.0f, 0.0f,	0.0f, 0.0f, 0.0f,
+		terrainScaleFactor1, 0.0f,-terrainScaleFactor1,			terrainScaleFactor1, 0.0f,						0.0f, 0.0f, 0.0f,	0.0f, 0.0f, 0.0f,
+		-terrainScaleFactor1, 0.0f, terrainScaleFactor1,		0.0f, terrainScaleFactor1,						0.0f, 0.0f, 0.0f,	0.0f, 0.0f, 0.0f,
+		terrainScaleFactor1, 0.0f,terrainScaleFactor1,			terrainScaleFactor1, terrainScaleFactor1,	    0.0f, 0.0f, 0.0f,	0.0f, 0.0f, 0.0f
 	};
 
-	calcAverageNormals(terrainIndices, 6, terrainVertices, 32, 8, 5);
+	calcAverageNormals(terrainIndices, 6, terrainVertices, 44, 11, 5);
+	calcAverageTangents(terrainIndices, 6, terrainVertices, 44, 11, 8);
 
 	Static_Mesh* obj = new Static_Mesh();
-	obj->CreateMesh(terrainVertices, terrainIndices, 32, 6);
+	obj->CreateMeshNorm(terrainVertices, terrainIndices, 44, 6);
 	terrainList.push_back(obj);
 }
 
@@ -1204,6 +1205,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	uniformView2 = terrainShader.GetViewLocation();
 	uniformPrevPVM2 = terrainShader.GetPrevPVMLocation();
 	uniformEyePosition2 = terrainShader.GetEyePositionLocation();
+	uniformHeightScale2 = terrainShader.GetHeightScaleLocation();
 	uniformDispFactor = terrainShader.GetDispFactorLocation();
 	uniformAlbedoMap2 = terrainShader.GetAlbedoLocation();
 	uniformMetallicMap2 = terrainShader.GetMetallicLocation();
@@ -1214,6 +1216,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	glUniform1f(uniformHeightScale2, 0.02f);
 
 	terrainShader.SetDirectionalLight(mainLight);
 	terrainShader.SetPointLight(pointLights[0], pointLightCount, 5, 0);

@@ -9,7 +9,6 @@ layout (location = 3) in vec3 tangent;
 out vec2 TexCoord;	
 out vec3 Normal;											
 out mat3 TBN;
-out mat3 TBN2;
 out vec3 FragPos;
 out vec4 DirectionalLightSpacePos;
 
