@@ -402,7 +402,8 @@ void main()
 	float bgrTxtreAmnt = 1-(blendMapColor.r+blendMapColor.g+blendMapColor.b);
 
 	vec3 viewDir = normalize(transpose(TBN)*(eyePosition-FragPos));
-	NewTexCoord = CalcParallaxMapping(viewDir, TexCoord, blendMapColor, bgrTxtreAmnt);
+	if(height_scale==0.0f) NewTexCoord = TexCoord;
+	else NewTexCoord = CalcParallaxMapping(viewDir, TexCoord, blendMapColor, bgrTxtreAmnt);
 
 	NewNormal = CalcBumpedNormal(blendMapColor, bgrTxtreAmnt);
 	

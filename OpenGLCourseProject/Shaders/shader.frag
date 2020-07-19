@@ -360,7 +360,8 @@ vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord)
 void main()												
 {
 	vec3 viewDir = normalize(transpose(TBN)*(eyePosition-FragPos));
-	NewTexCoord = CalcParallaxMapping(viewDir, TexCoord);
+	if(height_scale==0.0f) NewTexCoord = TexCoord;
+	else NewTexCoord = CalcParallaxMapping(viewDir, TexCoord);
 	
 	if(NewTexCoord.x >1.0 || NewTexCoord.y > 1.0 || NewTexCoord.x < 0.0 || NewTexCoord.y < 0.0)
 		discard;
