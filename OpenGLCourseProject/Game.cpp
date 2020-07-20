@@ -99,15 +99,15 @@ void Game::init()
 	terrainTextureBlend = Texture("Textures/Blend/terrain.jpg");
 	terrainTextureBlend.LoadTexture();
 	terrainTexture = Texture("Textures/terrain");
-	terrainTexture.LoadTextureArray(true);
+	terrainTexture.LoadTextureArray(true, false);
 	terrainTextureMetal = Texture("Textures/Metallic/terrain");
-	terrainTextureMetal.LoadTextureArray(false);
+	terrainTextureMetal.LoadTextureArray(false, true);
 	terrainTextureRough = Texture("Textures/Roughness/terrain");
-	terrainTextureRough.LoadTextureArray(false);
+	terrainTextureRough.LoadTextureArray(false, true);
 	terrainTextureNorm = Texture("Textures/Normal/terrain");
-	terrainTextureNorm.LoadTextureArray(false);
+	terrainTextureNorm.LoadTextureArray(false, true);
 	terrainTexturePara = Texture("Textures/Parallax/terrain");
-	terrainTexturePara.LoadTextureArray(false);
+	terrainTexturePara.LoadTextureArray(false, true);
 
 
 	shinyMaterialGlow = Material(1, 6, 7, 11, 12, 13);

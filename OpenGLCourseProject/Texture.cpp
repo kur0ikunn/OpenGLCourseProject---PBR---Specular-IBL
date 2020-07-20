@@ -97,7 +97,7 @@ bool Texture::LoadTexture()
 	return true;
 }
 
-bool Texture::LoadTextureArray(bool is_SRGB)
+bool Texture::LoadTextureArray(bool is_SRGB, bool is_lowres)
 {
 	stbi_set_flip_vertically_on_load(false);
 
@@ -113,8 +113,12 @@ bool Texture::LoadTextureArray(bool is_SRGB)
 		intFormat = GL_RGB8;
 	}
 
+	int w, h;
+
+	if (is_lowres) w = h = 256;
+	else w = h = 1024;
 	// Allocate the storage.
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, intFormat, 1024, 1024, NUM_TERRAIN_LAYERS);
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, intFormat, w, h, NUM_TERRAIN_LAYERS);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, NUM_TERRAIN_LAYERS);
@@ -134,7 +138,7 @@ bool Texture::LoadTextureArray(bool is_SRGB)
 			return false;
 		}
 
-		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGB, GL_UNSIGNED_BYTE, texData[i]);
+		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, w, h, 1, GL_RGB, GL_UNSIGNED_BYTE, texData[i]);
 		stbi_image_free(texData[i]);
 	}
 	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);

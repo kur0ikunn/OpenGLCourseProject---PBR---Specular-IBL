@@ -355,7 +355,7 @@ vec3 CalcBumpedNormal(vec3 Color, float Amnt)
     return newNormal;
 }
 
-vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord,vec3 Color, float Amnt)
+vec2 CalcParallaxMapping(vec3 viewDir, vec2 texCoord,vec3 Color, float Amnt)
 {
 	// number of depth layers
     const float numLayers = 5;
@@ -368,7 +368,7 @@ vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord,vec3 Color, float Amnt)
     vec2 deltaTexCoords = P / numLayers;
 	
 	// get initial values
-	vec2  currentTexCoords     = TexCoord;
+	vec2  currentTexCoords     = texCoord;
 	float currentDepthMapValue = CalcMultipleTexture(material.parallaxMap,currentTexCoords, Color, Amnt).r;
 	  
 	while(currentLayerDepth < currentDepthMapValue)

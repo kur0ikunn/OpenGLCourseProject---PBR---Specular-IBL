@@ -16,7 +16,7 @@ public:
 	bool LoadTexture();
 	bool LoadTextureA();
 	bool LoadTextureSRGB();
-	bool LoadTextureArray(bool is_SRGB);
+	bool LoadTextureArray(bool is_SRGB, bool is_lowres);
 	bool LoadTextureSRGBA();
 	bool LoadCubeMap(std::vector<std::string> faceLocation);
 	bool LoadCubeMapSRGB(std::vector<std::string> faceLocation);

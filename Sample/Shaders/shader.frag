@@ -316,7 +316,7 @@ vec3 CalcBumpedNormal()
     return newNormal;
 }
 
-vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord)
+vec2 CalcParallaxMapping(vec3 viewDir, vec2 texCoord)
 {
 	// number of depth layers
     const float numLayers = 5;
@@ -329,7 +329,7 @@ vec2 CalcParallaxMapping(vec3 viewDir, vec2 TexCoord)
     vec2 deltaTexCoords = P / numLayers;
 	
 	// get initial values
-	vec2  currentTexCoords     = TexCoord;
+	vec2  currentTexCoords     = texCoord;
 	float currentDepthMapValue = texture(material.parallaxMap, currentTexCoords).r;
 	  
 	while(currentLayerDepth < currentDepthMapValue)
