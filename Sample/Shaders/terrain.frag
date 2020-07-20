@@ -129,7 +129,6 @@ float CalcDirectionalShadowFactor(int CascadeIndex, DirectionalLight light, vec4
 	
 	float bias = 0.0;
 	if(CascadeIndex>1) bias = max(0.001 * (1 - dot(normal, lightDir)), 0.0002);
-	else if(CascadeIndex==1) bias = max(0.001 * (1 - dot(normal, lightDir)), 0.0001);
 	else bias = max(0.0001 * (1 - dot(normal, lightDir)), 0.0001);
 	
 	float shadow = 0.0;
