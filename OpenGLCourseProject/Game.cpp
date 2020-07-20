@@ -128,8 +128,8 @@ void Game::init()
 	shinyMaterial = Material(1, 1);
 	dullMaterial = Material(1, 1);
 	
-	shinyTerrainMaterial = Material(13, 15, 16, 17, 18);
-	dullTerrainMaterial = Material(13, 15, 16, 17, 18);
+	shinyTerrainMaterial = Material(12, 13, 15, 16, 17);
+	dullTerrainMaterial = Material(12, 13, 15, 16, 17);
 	
 	cube.LoadModel("Models/cube.obj");
 
@@ -607,12 +607,12 @@ void Game::RenderTerrain(bool shadow, bool depth)
 	{
 		terrainShader.SetDisplacementMap(1);
 	}
-	terrainShader.SetBlendMap(12);
-	terrainTexture.UseTextureArray(12);
-	terrainTextureMetal.UseTextureArray(14);
-	terrainTextureNorm.UseTextureArray(15);
-	terrainTextureRough.UseTextureArray(16);
-	terrainTexturePara.UseTextureArray(17);
+	terrainShader.SetBlendMap(11);
+	terrainTexture.UseTextureArray(11);
+	terrainTextureMetal.UseTextureArray(12);
+	terrainTextureNorm.UseTextureArray(14);
+	terrainTextureRough.UseTextureArray(15);
+	terrainTexturePara.UseTextureArray(16);
 	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformNormalMap2, uniformRoughnessMap2, uniformParallaxMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
