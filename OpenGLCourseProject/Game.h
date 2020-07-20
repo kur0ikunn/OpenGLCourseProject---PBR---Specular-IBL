@@ -292,7 +292,7 @@ private:
 	glm::mat4 prevProj = glm::mat4();
 	glm::mat4 prevView = glm::mat4();
 
-	glm::mat4 vView[3] = { glm::mat4() };
+	glm::mat4 vView[NUM_CASCADES] = { glm::mat4() };
 	glm::mat4 testLitView[1] = { glm::mat4() };
 
 	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);

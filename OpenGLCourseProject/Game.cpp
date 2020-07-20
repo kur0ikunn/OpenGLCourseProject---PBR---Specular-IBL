@@ -128,8 +128,8 @@ void Game::init()
 	shinyMaterial = Material(1, 1);
 	dullMaterial = Material(1, 1);
 	
-	shinyTerrainMaterial = Material(12, 13, 15, 16, 17);
-	dullTerrainMaterial = Material(12, 13, 15, 16, 17);
+	shinyTerrainMaterial = Material(13, 15, 16, 17, 18);
+	dullTerrainMaterial = Material(13, 15, 16, 17, 18);
 	
 	cube.LoadModel("Models/cube.obj");
 
@@ -607,12 +607,12 @@ void Game::RenderTerrain(bool shadow, bool depth)
 	{
 		terrainShader.SetDisplacementMap(1);
 	}
-	terrainShader.SetBlendMap(11);
-	terrainTexture.UseTextureArray(11);
-	terrainTextureMetal.UseTextureArray(12);
-	terrainTextureNorm.UseTextureArray(14);
-	terrainTextureRough.UseTextureArray(15);
-	terrainTexturePara.UseTextureArray(16);
+	terrainShader.SetBlendMap(12);
+	terrainTexture.UseTextureArray(12);
+	terrainTextureMetal.UseTextureArray(14);
+	terrainTextureNorm.UseTextureArray(15);
+	terrainTextureRough.UseTextureArray(16);
+	terrainTexturePara.UseTextureArray(17);
 	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformNormalMap2, uniformRoughnessMap2, uniformParallaxMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
@@ -1014,7 +1014,7 @@ void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* ligh
 	testLitView[0] = light->CalculateCascadeLightTransform();
 	mainLight->GetShadowMap()->CalcOrthProjs(camera.calculateViewMatrix(), testLitView, 60.0f);
 
-	for (unsigned int i = 0; i < 3; ++i)
+	for (unsigned int i = 0; i < NUM_CASCADES; ++i)
 	{
 		vView[i] = glm::lookAt(mainLight->GetShadowMap()->GetModlCent(i), mainLight->GetShadowMap()->GetModlCent(i) + glm::normalize(light->GetLightDirection()) * 0.2f, light->GetLightUp());
 	}

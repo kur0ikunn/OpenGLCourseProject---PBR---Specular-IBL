@@ -16,8 +16,8 @@ bool ShadowMap_Framebuffer::Init(GLuint width, GLuint height)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		/*float bColor[] = { 10.0f, 10.0f, 10.0f, 1.0f };
-		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, bColor);*/
+		float bColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, bColor);
 	}
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, buffers[0], 0);
@@ -78,7 +78,7 @@ void ShadowMap_Framebuffer::CalcOrthProjs(const glm::mat4& Cam, const glm::mat4*
 		float yn = cascadeEnd[i] * tanHalfVFOV;
 		float yf = cascadeEnd[i + 1] * tanHalfVFOV;
 
-		glm::vec4 frustrumCorners[8] = {
+		glm::vec4 frustrumCorners[NUM_FRUSTUM_CORNERS] = {
 			//near face
 			glm::vec4(xn,yn,-cascadeEnd[i],1.0f),
 			glm::vec4(-xn,yn,-cascadeEnd[i],1.0f),
@@ -98,7 +98,7 @@ void ShadowMap_Framebuffer::CalcOrthProjs(const glm::mat4& Cam, const glm::mat4*
 		float minZ = std::numeric_limits<float>::max();
 		float maxZ = std::numeric_limits<float>::min();
 
-		for (unsigned int j = 0; j < 8; ++j)
+		for (unsigned int j = 0; j < NUM_FRUSTUM_CORNERS; ++j)
 		{
 			glm::vec4 vW = CamInv * frustrumCorners[j];
 			frustrumCorners[j] = vView[0] * vW;
@@ -132,7 +132,7 @@ glm::mat4 ShadowMap_Framebuffer::GetProjMat(glm::mat4& view, unsigned int index)
 
 float ShadowMap_Framebuffer::GetRatio(glm::mat4& view, int index)
 {
-	if (index > -1 && index < 4)
+	if (index > -1 && index < NUM_CASCADES+1)
 	{
 		return((-(view * modeldFrusCorns[index][0]).z + (view * modeldFrusCorns[index][4]).z));
 	}
@@ -145,11 +145,11 @@ float ShadowMap_Framebuffer::GetRatio(glm::mat4& view, int index)
 glm::vec3 ShadowMap_Framebuffer::GetModlCent(unsigned int index)
 {
 	glm::vec4 temp = glm::vec4(0.0f);
-	for (unsigned int i = 0; i < 8; ++i)
+	for (unsigned int i = 0; i < NUM_FRUSTUM_CORNERS; ++i)
 	{
 		temp += modeldFrusCorns[index][i];
 	}
-	glm::vec4 temp2 = temp / 8.0f;
+	glm::vec4 temp2 = temp / static_cast<float > (NUM_FRUSTUM_CORNERS);
 	return glm::vec3(temp2);
 }
 

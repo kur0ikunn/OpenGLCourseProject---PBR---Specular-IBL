@@ -275,6 +275,8 @@ vec4 CalcDirectionalLight()
                 CascadeIndicator = vec4(0.0, 0.1, 0.0, 0.0);
             else if (i == 2)
                 CascadeIndicator = vec4(0.0, 0.0, 0.1, 0.0);
+			//else if (i == 3)
+                //CascadeIndicator = vec4(0.1, 0.1, 0.0, 0.0);
        break;
      }
 	}	
