@@ -217,15 +217,15 @@ float GeometrySmith(vec3 N,vec3 V, vec3 L, float roughness)
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
-	return max(F0+(1.0-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
-	//return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+	//return max(F0+(1.0-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
+	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
 
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
-	return max(F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
-	//return F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0);
+	//return max(F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0),0.0);
+	return F0+(max(vec3(1.0-roughness),F0)-F0)*pow(1.0-min(cosTheta,1.0), 5.0);
 }
 
 
@@ -358,7 +358,7 @@ vec3 CalcBumpedNormal(vec3 Color, float Amnt)
 vec2 CalcParallaxMapping(vec3 viewDir, vec2 texCoord,vec3 Color, float Amnt)
 {
 	// number of depth layers
-    const float numLayers = 5;
+    const float numLayers = 10;
     // calculate the size of each layer
     float layerDepth = 1.0 / numLayers;
     // depth of current layer
