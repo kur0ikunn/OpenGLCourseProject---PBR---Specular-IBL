@@ -124,7 +124,7 @@ bool Texture::LoadTextureArray(bool is_SRGB, bool is_lowres)
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, NUM_TERRAIN_LAYERS);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+	glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 	unsigned char* texData[NUM_TERRAIN_LAYERS] = {nullptr};
 	for (int i = 0; i < NUM_TERRAIN_LAYERS; ++i)
