@@ -1390,7 +1390,7 @@ void Game::MotionBlurPass(float fps)
 	motionBlurShader.UseShader();
 
 	uniformVelocityScale = motionBlurShader.GetVelocityScaleLocation();
-	glUniform1f(uniformVelocityScale, fps/60.0f);
+	glUniform1f(uniformVelocityScale, fps/30.0f);
 
 	hdr->ReadScene(GL_TEXTURE1);
 	motionBlurShader.SetTexture(1);
