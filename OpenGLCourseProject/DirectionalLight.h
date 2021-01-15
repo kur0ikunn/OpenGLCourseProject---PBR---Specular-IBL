@@ -13,7 +13,7 @@ public:
 
 	void UseLight(GLuint ambientColorLocation, GLuint directionLocation);
 
-	glm::mat4 CalculateLightTransform();
+	glm::mat4* CalculateLightTransform();
 	glm::mat4 CalculateCascadeLightTransform();
 	glm::vec3 GetLightUp();
 	glm::vec3 GetLightDirection();

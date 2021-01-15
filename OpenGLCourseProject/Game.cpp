@@ -1261,7 +1261,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	shaderList[0].SetDirectionalLight(mainLight);
 	shaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
 	shaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
-	shaderList[0].SetDirectionalLightTransform(&(mainLight->CalculateLightTransform()));
+	shaderList[0].SetDirectionalLightTransform(mainLight->CalculateLightTransform());
 
 	shaderList[0].SetDirectionalShadowMap(2);
 	shaderList[0].SetIrradianceMap(8);
@@ -1297,7 +1297,7 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	animShaderList[0].SetDirectionalLight(mainLight);
 	animShaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
 	animShaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
-	animShaderList[0].SetDirectionalLightTransform(&(mainLight->CalculateLightTransform()));
+	animShaderList[0].SetDirectionalLightTransform(mainLight->CalculateLightTransform());
 
 	animShaderList[0].SetDirectionalShadowMap(2);
 	animShaderList[0].SetAOMap(14);
