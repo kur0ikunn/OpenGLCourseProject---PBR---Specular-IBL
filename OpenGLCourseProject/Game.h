@@ -141,136 +141,137 @@ private:
 
 	glm::mat4 projection = glm::mat4();
 
-	Equirectangular_to_CubeMap_Shader environmentMapShader;
-	Equirectangular_to_CubeMap_Framebuffer* environmentMap;
+	std::unique_ptr<Equirectangular_to_CubeMap_Shader> environmentMapShader = std::make_unique<Equirectangular_to_CubeMap_Shader>();
+	std::unique_ptr<Equirectangular_to_CubeMap_Framebuffer> environmentMap;
 
-	Irradiance_Convolution_Shader irradianceConvolutionShader;
-	Equirectangular_to_CubeMap_Framebuffer* irradianceMap;
+	std::unique_ptr <Irradiance_Convolution_Shader> irradianceConvolutionShader = std::make_unique<Irradiance_Convolution_Shader>();
+	std::unique_ptr <Equirectangular_to_CubeMap_Framebuffer> irradianceMap;
 
-	PreFilter_Shader prefilterShader;
-	PreFilter_Framebuffer* prefilterMap;
+	std::unique_ptr <PreFilter_Shader> prefilterShader = std::make_unique<PreFilter_Shader>();
+	std::unique_ptr <PreFilter_Framebuffer> prefilterMap;
 
-	BRDF_Shader brdfShader;
-	BRDF_Framebuffer* brdfMap;
+	std::unique_ptr < BRDF_Shader > brdfShader = std::make_unique<BRDF_Shader>();
+	std::unique_ptr < BRDF_Framebuffer > brdfMap;
 
-	Model_Shader directionalShadowShader;
-	Model_Shader omniShadowShader;
+	std::unique_ptr < Model_Shader > directionalShadowShader = std::make_unique<Model_Shader>();
+	std::unique_ptr < Model_Shader > omniShadowShader = std::make_unique<Model_Shader>();
 
-	Model_Shader animDirectionalShadowShader;
-	Model_Shader animOmniShadowShader;
+	std::unique_ptr < Model_Shader > animDirectionalShadowShader = std::make_unique<Model_Shader>();
+	std::unique_ptr < Model_Shader > animOmniShadowShader = std::make_unique<Model_Shader>();
 
-	Terrain_Shader terrainDirectionalShadowShader;
-	Terrain_Shader terrainOmniDirectionalShadowShader;
+	std::unique_ptr < Terrain_Shader> terrainDirectionalShadowShader = std::make_unique<Terrain_Shader>();
+	std::unique_ptr < Terrain_Shader> terrainOmniDirectionalShadowShader = std::make_unique<Terrain_Shader>();
 
-	PreZPass_Shader static_preZPassShader;
-	PreZPass_Shader anim_preZPassShader;
-	Terrain_PreZPass_Shader terrain_preZPassShader;
-	Depth_Framebuffer* depth = nullptr;
+	std::unique_ptr < PreZPass_Shader> static_preZPassShader = std::make_unique<PreZPass_Shader>();
+	std::unique_ptr < PreZPass_Shader> anim_preZPassShader = std::make_unique<PreZPass_Shader>();
+	std::unique_ptr < Terrain_PreZPass_Shader> terrain_preZPassShader = std::make_unique<Terrain_PreZPass_Shader>();
+	std::unique_ptr < Depth_Framebuffer> depth = nullptr;
 
-	SSAO_Shader ssaoShader;
-	SSAO_Framebuffer* ssao = nullptr;
+	std::unique_ptr < SSAO_Shader> ssaoShader = std::make_unique<SSAO_Shader>();
+	std::unique_ptr < SSAO_Framebuffer> ssao = nullptr;
 
-	SSAOBlur_Shader ssaoBlurShader;
-	SSAOBlur_Framebuffer* ssaoBlur = nullptr;
+	std::unique_ptr < SSAOBlur_Shader > ssaoBlurShader = std::make_unique<SSAOBlur_Shader>();
+	std::unique_ptr < SSAOBlur_Framebuffer > ssaoBlur = nullptr;
 
-	std::vector<Model_Shader> shaderList;
-	std::vector<Model_Shader> animShaderList;
+	std::vector< std::shared_ptr < Model_Shader>> shaderList;
+	std::vector< std::shared_ptr < Model_Shader>> animShaderList;
 
-	Terrain_Shader terrainShader;
+	std::unique_ptr < Terrain_Shader> terrainShader = std::make_unique<Terrain_Shader>();
 
-	Billboard_Shader billboardShader;
-	Particle_Shader particleShader;
+	std::unique_ptr < Billboard_Shader> billboardShader = std::make_unique<Billboard_Shader>();
+	std::unique_ptr < Particle_Shader> particleShader = std::make_unique<Particle_Shader>();
 
-	HDR_Shader hdrShader;
-	HDR_Framebuffer* hdr = nullptr;
-	MotionBlur_Shader motionBlurShader;
-	Motion_Blur_FrameBuffer* motionBlur = nullptr;
-	Blur_Shader blurShader;
-	Blur_PingPong_Framebuffer* blur = nullptr;
+	std::unique_ptr < HDR_Shader> hdrShader = std::make_unique<HDR_Shader>();
+	std::unique_ptr < HDR_Framebuffer> hdr = nullptr;
+	std::unique_ptr < MotionBlur_Shader> motionBlurShader = std::make_unique<MotionBlur_Shader>();
+	std::unique_ptr < Motion_Blur_FrameBuffer> motionBlur = nullptr;
+	std::unique_ptr < Blur_Shader> blurShader = std::make_unique<Blur_Shader>();
+	std::unique_ptr < Blur_PingPong_Framebuffer> blur = nullptr;
 
-	std::vector<Static_Mesh*> meshList;
-	std::vector<Static_Mesh*> terrainList;
-	std::vector<Static_Mesh*> billboardList;
-	std::vector<ParticleSystem*> particleList;
+	std::vector< std::shared_ptr < Static_Mesh>> meshList;
+	std::vector< std::shared_ptr < Static_Mesh>> terrainList;
+	std::vector< std::shared_ptr < Static_Mesh>> billboardList;
+	std::vector< std::shared_ptr < ParticleSystem>> particleList;
 
-	Static_Mesh* quad;
-	Static_Mesh* mesh_cube;
+	std::unique_ptr < Static_Mesh> quad;
+	std::unique_ptr < Static_Mesh> mesh_cube;
 
-	Camera camera;
+	std::unique_ptr < Camera> camera;
 
-	DirectionalLight* mainLight;
-	PointLight* pointLights[MAX_POINT_LIGHTS];
-	SpotLight* spotLights[MAX_SPOT_LIGHTS];
+	std::unique_ptr < DirectionalLight> mainLight;
+	std::unique_ptr < PointLight> pointLights[MAX_POINT_LIGHTS];
+	std::unique_ptr < SpotLight> spotLights[MAX_SPOT_LIGHTS];
 
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
 
-	Skybox* skybox;
+	std::unique_ptr < Skybox> skybox;
 
-	Texture environmentTexture;
-	Texture skyboxTexture;
+	std::unique_ptr < Texture> environmentTexture;
+	std::unique_ptr < Texture> skyboxTexture;
 
-	Texture brickTexture;
-	Texture brickTextureMetal;
-	Texture brickTextureNorm;
-	Texture brickTextureRough;
-	Texture brickTexturePara;
-	Texture brickTextureGlow;
-	Texture metalDebrisTexture;
-	Texture metalDebrisTextureMetal;
-	Texture metalDebrisTextureNorm;
-	Texture metalDebrisTextureRough;
-	Texture metalDebrisTexturePara;
-	Texture metalDebrisTextureGlow;
-	Texture floorTexture;
-	Texture floorTextureMetal;
-	Texture floorTextureNorm;
-	Texture floorTextureRough;
-	Texture floorTexturePara;
-	Texture floorTextureGlow;
-	Texture rustedMetal;
-	Texture rustedMetalMetal;
-	Texture rustedMetalNorm;
-	Texture rustedMetalRough;
-	Texture rustedMetalPara;
-	Texture rustedMetalGlow;
+	std::unique_ptr < Texture> brickTexture;
+	std::unique_ptr < Texture> brickTextureMetal;
+	std::unique_ptr < Texture> brickTextureNorm;
+	std::unique_ptr < Texture> brickTextureRough;
+	std::unique_ptr < Texture> brickTexturePara;
+	std::unique_ptr < Texture> brickTextureGlow;
+	std::unique_ptr < Texture> metalDebrisTexture;
+	std::unique_ptr < Texture> metalDebrisTextureMetal;
+	std::unique_ptr < Texture> metalDebrisTextureNorm;
+	std::unique_ptr < Texture> metalDebrisTextureRough;
+	std::unique_ptr < Texture> metalDebrisTexturePara;
+	std::unique_ptr < Texture> metalDebrisTextureGlow;
+	std::unique_ptr < Texture> floorTexture;
+	std::unique_ptr < Texture> floorTextureMetal;
+	std::unique_ptr < Texture> floorTextureNorm;
+	std::unique_ptr < Texture> floorTextureRough;
+	std::unique_ptr < Texture> floorTexturePara;
+	std::unique_ptr < Texture> floorTextureGlow;
+	std::unique_ptr < Texture> rustedMetal;
+	std::unique_ptr < Texture> rustedMetalMetal;
+	std::unique_ptr < Texture> rustedMetalNorm;
+	std::unique_ptr < Texture> rustedMetalRough;
+	std::unique_ptr < Texture> rustedMetalPara;
+	std::unique_ptr < Texture> rustedMetalGlow;
 
-	Texture terrainTextureDisp;
-	Texture terrainTextureBlend;
-	Texture	terrainTexture;
-	Texture terrainTextureMetal;
-	Texture terrainTextureRough;
-	Texture terrainTextureNorm;
-	Texture terrainTexturePara;
+	std::unique_ptr < Texture> terrainTextureDisp;
+	std::unique_ptr < Texture> terrainTextureBlend;
+	std::unique_ptr < Texture>	terrainTexture;
+	std::unique_ptr < Texture> terrainTextureMetal;
+	std::unique_ptr < Texture> terrainTextureRough;
+	std::unique_ptr < Texture> terrainTextureNorm;
+	std::unique_ptr < Texture> terrainTexturePara;
 
-	Texture SSAONoiseTexture;
+	std::unique_ptr < Texture> SSAONoiseTexture = std::make_unique<Texture>();
 
-	Texture plainTexture;
-	Texture grassTexture;
+	std::unique_ptr < Texture> plainTexture;
+	std::unique_ptr < Texture> grassTexture;
 
-	Material shinyMaterialGlow;
-	Material dullMaterialGlow;
-	Material shinyMaterialPara;
-	Material dullMaterialPara;
-	Material shinyMaterialRough;
-	Material dullMaterialRough;
-	Material shinyMaterialNorm;
-	Material dullMaterialNorm;
-	Material shinyMaterialMetal;
-	Material dullMaterialMetal;
-	Material shinyMaterial;
-	Material dullMaterial;
+	std::unique_ptr < Material> shinyMaterialGlow;
+	std::unique_ptr < Material> dullMaterialGlow;
+	std::unique_ptr < Material> shinyMaterialPara;
+	std::unique_ptr < Material> dullMaterialPara;
+	std::unique_ptr < Material> shinyMaterialRough;
+	std::unique_ptr < Material> dullMaterialRough;
+	std::unique_ptr < Material> shinyMaterialNorm;
+	std::unique_ptr < Material> dullMaterialNorm;
+	std::unique_ptr < Material> shinyMaterialMetal;
+	std::unique_ptr < Material> dullMaterialMetal;
+	std::unique_ptr < Material> shinyMaterial;
+	std::unique_ptr < Material> dullMaterial;
 
-	Material shinyTerrainMaterial;
-	Material dullTerrainMaterial;
+	std::unique_ptr < Material> shinyTerrainMaterial;
+	std::unique_ptr < Material> dullTerrainMaterial;
 
-	Static_Model sniper;
-	Static_Model gun;
-	Static_Model anymodel;
-	Static_Model bulb;
-	Static_Model cube;
-	Static_Model sphere;
-	Animated_Model anim, anim2;
+	std::unique_ptr < Static_Model> sniper = std::make_unique<Static_Model>();
+	std::unique_ptr < Static_Model> gun = std::make_unique<Static_Model>();
+	std::unique_ptr < Static_Model> anymodel = std::make_unique<Static_Model>();
+	std::unique_ptr < Static_Model> bulb = std::make_unique<Static_Model>();
+	std::unique_ptr < Static_Model> cube = std::make_unique<Static_Model>();
+	std::unique_ptr < Static_Model> sphere = std::make_unique<Static_Model>();
+	std::unique_ptr < Animated_Model> anim = std::make_unique<Animated_Model>();
+	std::unique_ptr < Animated_Model> anim2 = std::make_unique<Animated_Model>();
 
 	GLfloat deltaTime = 0.0f;
 	GLfloat lastTime = 0.0f;
@@ -278,12 +279,12 @@ private:
 	GLfloat aircraftAngle = 0.0f;
 
 	//Vertex Shader
-	const char* vShader = "Shaders/shader.vert";
+	const std::string vShader = "Shaders/shader.vert";
 
 	//Fragment Shaders
-	const char* fShader = "Shaders/shader.frag";
+	const std::string fShader = "Shaders/shader.frag";
 
-	const char* avShader = "Shaders/animated_shader.vert";
+	const std::string avShader = "Shaders/animated_shader.vert";
 
 	std::vector<glm::vec3> ssaoNoiseData{16, glm::vec3(0.0f, 0.0f, 0.0f) };
 

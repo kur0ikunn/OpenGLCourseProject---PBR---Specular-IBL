@@ -29,162 +29,162 @@ void Game::init()
 	CreateObject();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
+	camera = std::make_unique<Camera>(glm::vec3(-terrainScaleFactor, 30.0f, -terrainScaleFactor), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 50.0f, 0.2f);
 
-	environmentTexture = Texture("Textures/HDR/GCanyon_C_YumaPoint_3k.hdr");
-	environmentTexture.LoadTextureHDR();
+	environmentTexture = std::make_unique<Texture>("Textures/HDR/GCanyon_C_YumaPoint_3k.hdr");
+	environmentTexture->LoadTextureHDR();
 
-	brickTexture = Texture("Textures/brick.jpg");
-	brickTexture.LoadTextureSRGB();
-	metalDebrisTexture = Texture("Textures/small_metal_debris.jpg");
-	metalDebrisTexture.LoadTextureSRGB();
-	floorTexture = Texture("Textures/brick_floor.png");
-	floorTexture.LoadTextureSRGB();
-	rustedMetal = Texture("Textures/rustediron2.png");
-	rustedMetal.LoadTextureSRGBA();
+	brickTexture = std::make_unique <Texture>("Textures/brick.jpg");
+	brickTexture->LoadTextureSRGB();
+	metalDebrisTexture = std::make_unique <Texture>("Textures/small_metal_debris.jpg");
+	metalDebrisTexture->LoadTextureSRGB();
+	floorTexture = std::make_unique <Texture>("Textures/brick_floor.png");
+	floorTexture->LoadTextureSRGB();
+	rustedMetal = std::make_unique <Texture>("Textures/rustediron2.png");
+	rustedMetal->LoadTextureSRGBA();
 
-	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTextureSRGB();
+	plainTexture = std::make_unique <Texture>("Textures/plain.png");
+	plainTexture->LoadTextureSRGB();
 	
-	grassTexture = Texture("Textures/grass.png");
-	grassTexture.LoadTextureSRGBA();
+	grassTexture = std::make_unique <Texture>("Textures/grass.png");
+	grassTexture->LoadTextureSRGBA();
 
-	brickTextureMetal = Texture("Textures/Metallic/brick.jpg");
-	brickTextureMetal.LoadTexture();
-	metalDebrisTextureMetal = Texture("Textures/Metallic/small_metal_debris.jpg");
-	metalDebrisTextureMetal.LoadTexture();
-	floorTextureMetal = Texture("Textures/Metallic/brick_floor.png");
-	floorTextureMetal.LoadTexture();
-	rustedMetalMetal = Texture("Textures/Metallic/rustediron2.png");
-	rustedMetalMetal.LoadTexture();
+	brickTextureMetal = std::make_unique <Texture>("Textures/Metallic/brick.jpg");
+	brickTextureMetal->LoadTexture();
+	metalDebrisTextureMetal = std::make_unique <Texture>("Textures/Metallic/small_metal_debris.jpg");
+	metalDebrisTextureMetal->LoadTexture();
+	floorTextureMetal = std::make_unique <Texture>("Textures/Metallic/brick_floor.png");
+	floorTextureMetal->LoadTexture();
+	rustedMetalMetal = std::make_unique <Texture>("Textures/Metallic/rustediron2.png");
+	rustedMetalMetal->LoadTexture();
 
-	brickTextureNorm = Texture("Textures/Normal/brick.jpg");
-	brickTextureNorm.LoadTexture();
-	metalDebrisTextureNorm = Texture("Textures/Normal/small_metal_debris.jpg");
-	metalDebrisTextureNorm.LoadTexture();
-	floorTextureNorm = Texture("Textures/Normal/brick_floor.png");
-	floorTextureNorm.LoadTexture();
-	rustedMetalNorm = Texture("Textures/Normal/rustediron2.png");
-	rustedMetalNorm.LoadTexture();
+	brickTextureNorm = std::make_unique <Texture>("Textures/Normal/brick.jpg");
+	brickTextureNorm->LoadTexture();
+	metalDebrisTextureNorm = std::make_unique <Texture>("Textures/Normal/small_metal_debris.jpg");
+	metalDebrisTextureNorm->LoadTexture();
+	floorTextureNorm = std::make_unique <Texture>("Textures/Normal/brick_floor.png");
+	floorTextureNorm->LoadTexture();
+	rustedMetalNorm = std::make_unique <Texture>("Textures/Normal/rustediron2.png");
+	rustedMetalNorm->LoadTexture();
 
-	brickTextureRough = Texture("Textures/Roughness/brick.jpg");
-	brickTextureRough.LoadTexture();
-	metalDebrisTextureRough = Texture("Textures/Roughness/small_metal_debris.jpg");
-	metalDebrisTextureRough.LoadTexture();
-	floorTextureRough = Texture("Textures/Roughness/brick_floor.png");
-	floorTextureRough.LoadTexture();
-	rustedMetalRough = Texture("Textures/Roughness/rustediron2.png");
-	rustedMetalRough.LoadTexture();
+	brickTextureRough = std::make_unique <Texture>("Textures/Roughness/brick.jpg");
+	brickTextureRough->LoadTexture();
+	metalDebrisTextureRough = std::make_unique <Texture>("Textures/Roughness/small_metal_debris.jpg");
+	metalDebrisTextureRough->LoadTexture();
+	floorTextureRough = std::make_unique <Texture>("Textures/Roughness/brick_floor.png");
+	floorTextureRough->LoadTexture();
+	rustedMetalRough = std::make_unique <Texture>("Textures/Roughness/rustediron2.png");
+	rustedMetalRough->LoadTexture();
 
-	brickTexturePara = Texture("Textures/Parallax/brick.jpg");
-	brickTexturePara.LoadTexture();
-	metalDebrisTexturePara = Texture("Textures/Parallax/small_metal_debris.jpg");
-	metalDebrisTexturePara.LoadTexture();
-	floorTexturePara = Texture("Textures/Parallax/brick_floor.png");
-	floorTexturePara.LoadTexture();
-	rustedMetalPara = Texture("Textures/Parallax/rustediron2.png");
-	rustedMetalPara.LoadTexture();
+	brickTexturePara = std::make_unique <Texture>("Textures/Parallax/brick.jpg");
+	brickTexturePara->LoadTexture();
+	metalDebrisTexturePara = std::make_unique <Texture>("Textures/Parallax/small_metal_debris.jpg");
+	metalDebrisTexturePara->LoadTexture();
+	floorTexturePara = std::make_unique <Texture>("Textures/Parallax/brick_floor.png");
+	floorTexturePara->LoadTexture();
+	rustedMetalPara = std::make_unique <Texture>("Textures/Parallax/rustediron2.png");
+	rustedMetalPara->LoadTexture();
 
-	brickTextureGlow = Texture("Textures/Glow/brick.jpg");
-	brickTextureGlow.LoadTexture();
-	metalDebrisTextureGlow = Texture("Textures/Glow/small_metal_debris.jpg");
-	metalDebrisTextureGlow.LoadTexture();
-	floorTextureGlow = Texture("Textures/Glow/brick_floor.png");
-	floorTextureGlow.LoadTexture();
-	rustedMetalGlow = Texture("Textures/Glow/rock.jpg");
-	rustedMetalGlow.LoadTexture();
+	brickTextureGlow = std::make_unique <Texture>("Textures/Glow/brick.jpg");
+	brickTextureGlow->LoadTexture();
+	metalDebrisTextureGlow = std::make_unique <Texture>("Textures/Glow/small_metal_debris.jpg");
+	metalDebrisTextureGlow->LoadTexture();
+	floorTextureGlow = std::make_unique <Texture>("Textures/Glow/brick_floor.png");
+	floorTextureGlow->LoadTexture();
+	rustedMetalGlow = std::make_unique <Texture>("Textures/Glow/rock.jpg");
+	rustedMetalGlow->LoadTexture();
 
-	terrainTextureDisp = Texture("Textures/Displacement/terrain.jpg");
-	terrainTextureDisp.LoadTexture();
-	terrainTextureBlend = Texture("Textures/Blend/terrain.jpg");
-	terrainTextureBlend.LoadTexture();
-	terrainTexture = Texture("Textures/terrain");
-	terrainTexture.LoadTextureArray(true, false);
-	terrainTextureMetal = Texture("Textures/Metallic/terrain");
-	terrainTextureMetal.LoadTextureArray(false, true);
-	terrainTextureRough = Texture("Textures/Roughness/terrain");
-	terrainTextureRough.LoadTextureArray(false, true);
-	terrainTextureNorm = Texture("Textures/Normal/terrain");
-	terrainTextureNorm.LoadTextureArray(false, true);
-	terrainTexturePara = Texture("Textures/Parallax/terrain");
-	terrainTexturePara.LoadTextureArray(false, true);
+	terrainTextureDisp = std::make_unique <Texture>("Textures/Displacement/terrain.jpg");
+	terrainTextureDisp->LoadTexture();
+	terrainTextureBlend = std::make_unique <Texture>("Textures/Blend/terrain.jpg");
+	terrainTextureBlend->LoadTexture();
+	terrainTexture = std::make_unique <Texture>("Textures/terrain");
+	terrainTexture->LoadTextureArray(true, false);
+	terrainTextureMetal = std::make_unique <Texture>("Textures/Metallic/terrain");
+	terrainTextureMetal->LoadTextureArray(false, true);
+	terrainTextureRough = std::make_unique <Texture>("Textures/Roughness/terrain");
+	terrainTextureRough->LoadTextureArray(false, true);
+	terrainTextureNorm = std::make_unique <Texture>("Textures/Normal/terrain");
+	terrainTextureNorm->LoadTextureArray(false, true);
+	terrainTexturePara = std::make_unique <Texture>("Textures/Parallax/terrain");
+	terrainTexturePara->LoadTextureArray(false, true);
 
 
-	shinyMaterialGlow = Material(1, 6, 7, 11, 12, 13);
-	dullMaterialGlow = Material(1, 6, 7, 11, 12, 13);
+	shinyMaterialGlow = std::make_unique<Material>(1, 6, 7, 11, 12, 13);
+	dullMaterialGlow = std::make_unique<Material>(1, 6, 7, 11, 12, 13);
 
-	shinyMaterialPara = Material(1, 6, 7, 11,12);
-	dullMaterialPara = Material(1, 6, 7, 11,12);
+	shinyMaterialPara = std::make_unique<Material>(1, 6, 7, 11,12);
+	dullMaterialPara = std::make_unique<Material>(1, 6, 7, 11,12);
 
-	shinyMaterialRough= Material(1, 6, 7, 11);
-	dullMaterialRough = Material(1, 6, 7, 11);
+	shinyMaterialRough= std::make_unique<Material>(1, 6, 7, 11);
+	dullMaterialRough = std::make_unique<Material>(1, 6, 7, 11);
 
-	shinyMaterialNorm = Material(1, 6, 7);
-	dullMaterialNorm = Material(1, 6, 7);
+	shinyMaterialNorm = std::make_unique<Material>(1, 6, 7);
+	dullMaterialNorm = std::make_unique<Material>(1, 6, 7);
 
-	shinyMaterialMetal = Material(1, 6);
-	dullMaterialMetal = Material(1, 6);
+	shinyMaterialMetal = std::make_unique<Material>(1, 6);
+	dullMaterialMetal = std::make_unique<Material>(1, 6);
 
-	shinyMaterial = Material(1, 1);
-	dullMaterial = Material(1, 1);
+	shinyMaterial = std::make_unique<Material>(1, 1);
+	dullMaterial = std::make_unique<Material>(1, 1);
 	
-	shinyTerrainMaterial = Material(12, 13, 15, 16, 17);
-	dullTerrainMaterial = Material(12, 13, 15, 16, 17);
+	shinyTerrainMaterial = std::make_unique<Material>(12, 13, 15, 16, 17);
+	dullTerrainMaterial = std::make_unique<Material>(12, 13, 15, 16, 17);
 	
-	cube.LoadModel("Models/cube.obj");
+	cube->LoadModel("Models/cube.obj");
 
-	sphere.LoadModel("Models/sphere.obj");
+	sphere->LoadModel("Models/sphere.obj");
 	
-	sniper.LoadModel("Models/Sniper_rifle_KSR-29.fbx");
+	sniper->LoadModel("Models/Sniper_rifle_KSR-29.fbx");
 
-	gun.LoadModel("Models/Cerberus_LP.fbx");
+	gun->LoadModel("Models/Cerberus_LP.fbx");
 
-	anymodel.LoadModel("Models/Intergalactic_Spaceship-(Wavefront).obj");
+	anymodel->LoadModel("Models/Intergalactic_Spaceship-(Wavefront).obj");
 
-	bulb.LoadModel("Models/Free_Antique_Bulb.obj");
+	bulb->LoadModel("Models/Free_Antique_Bulb.obj");
 
-	anim.LoadModel("Models/boblampclean.md5mesh");
+	anim->LoadModel("Models/boblampclean.md5mesh");
 
-	anim2.LoadModel("Models/model.dae");
+	anim2->LoadModel("Models/model.dae");
 
-	environmentMap = new Equirectangular_to_CubeMap_Framebuffer();
+	environmentMap = std::make_unique<Equirectangular_to_CubeMap_Framebuffer>();
 	environmentMap->Init(ScreenWidth, ScreenWidth, true);
 
-	irradianceMap = new Equirectangular_to_CubeMap_Framebuffer();
+	irradianceMap = std::make_unique<Equirectangular_to_CubeMap_Framebuffer>();
 	irradianceMap->Init(32, 32, false);
 
-	prefilterMap = new PreFilter_Framebuffer();
+	prefilterMap = std::make_unique <PreFilter_Framebuffer>();
 	prefilterMap->Init(128, 128);
 
-	brdfMap = new BRDF_Framebuffer();
+	brdfMap = std::make_unique < BRDF_Framebuffer>();
 	brdfMap->Init(ScreenWidth, ScreenWidth);
 
-	quad = new Static_Mesh();
-	mesh_cube = new Static_Mesh();
+	quad = std::make_unique < Static_Mesh>();
+	mesh_cube = std::make_unique < Static_Mesh>();
 
-	depth = new Depth_Framebuffer();
+	depth = std::make_unique < Depth_Framebuffer>();
 	depth->Init(ScreenWidth, ScreenHeight);
 
-	ssao = new SSAO_Framebuffer();
+	ssao = std::make_unique < SSAO_Framebuffer>();
 	ssao->Init(ScreenWidth, ScreenHeight);
 
-	ssaoBlur = new SSAOBlur_Framebuffer();
+	ssaoBlur = std::make_unique < SSAOBlur_Framebuffer>();
 	ssaoBlur->Init(ScreenWidth, ScreenHeight);
 
-	hdr = new HDR_Framebuffer();
+	hdr = std::make_unique < HDR_Framebuffer>();
 	hdr->Init(ScreenWidth, ScreenHeight);
 
-	blur = new Blur_PingPong_Framebuffer();
+	blur = std::make_unique < Blur_PingPong_Framebuffer>();
 	blur->Init(ScreenWidth, ScreenHeight);
 
-	motionBlur = new Motion_Blur_FrameBuffer();
+	motionBlur = std::make_unique < Motion_Blur_FrameBuffer>();
 	motionBlur->Init(ScreenWidth, ScreenHeight);
 
-	mainLight = new DirectionalLight(2048, 2048,
+	mainLight = std::make_unique < DirectionalLight>(2048, 2048,
 		3.0f, 3.0f, 3.0f,
 		5500.0f, -5500.0f, -10000.0f);
 
-	pointLights[0] = new PointLight(1024, 1024,
+	pointLights[0] = std::make_unique < PointLight>(1024, 1024,
 		0.1f, 100.0f,
 		0.1f, 0.1f, 0.1f,
 		6.0f - terrainScaleFactor, 40.0f, 10.0f - terrainScaleFactor);
@@ -198,7 +198,7 @@ void Game::init()
 
 	pointLightCount++;*/
 
-	spotLights[0] = new SpotLight(1024, 1024,
+	spotLights[0] = std::make_unique < SpotLight>(1024, 1024,
 		0.1f, 100.0f,
 		1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f,
@@ -222,7 +222,7 @@ void Game::init()
 	//skyboxFaces.push_back("Textures/Skybox/barren_ft.jpg");
 
 
-	skybox = new Skybox();
+	skybox = std::make_unique<Skybox>();
 
 	//skyboxTexture.LoadCubeMapSRGB(skyboxFaces);
 
@@ -230,26 +230,26 @@ void Game::init()
 
 
 	//SSAO initialization
-	ssaoShader.UseShader();
+	ssaoShader->UseShader();
 
-	uniformSampleRadius = ssaoShader.GetSampleRadiusLocation();
-	uniformProjectionAO = ssaoShader.GetProjectionLocation();
+	uniformSampleRadius = ssaoShader->GetSampleRadiusLocation();
+	uniformProjectionAO = ssaoShader->GetProjectionLocation();
 
 	glUniformMatrix4fv(uniformProjectionAO, 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform1f(uniformSampleRadius, 0.1f);
 
-	ssaoShader.GenKernel();
-	ssaoShader.GenNoise(ssaoNoiseData);
+	ssaoShader->GenKernel();
+	ssaoShader->GenNoise(ssaoNoiseData);
 
-	SSAONoiseTexture.GenerateNoiseTexture(ssaoNoiseData);
+	SSAONoiseTexture->GenerateNoiseTexture(ssaoNoiseData);
 
-	terrainShader.UseShader();
+	terrainShader->UseShader();
 	for (size_t i = 0; i < NUM_CASCADES; ++i)
 	{
 		glm::vec4 vView(0.0f, 0.0f, mainLight->GetShadowMap()->GetCascadeEnd(i+1), 1.0f);
 		glm::vec4 vClip = projection * vView;
 		printf("%F \n", vClip.z);
-		terrainShader.SetCascadeEndClipSpace(i, -vClip.z);
+		terrainShader->SetCascadeEndClipSpace(i, -vClip.z);
 	}
 
 	EnvironmentMapPass();
@@ -265,8 +265,8 @@ void Game::update(float fps) {
 
 	//get + handle user input events
 	glfwPollEvents();
-	camera.keyControl(mainWindow.getKeys(), deltaTime);
-	camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+	camera->keyControl(mainWindow.getKeys(), deltaTime);
+	camera->mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
 	if (direction) {
 		triOffset += triIncrement;
@@ -300,26 +300,26 @@ void Game::update(float fps) {
 	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	DirectionalShadowMapPass(camera.calculateViewMatrix(), mainLight);
+	DirectionalShadowMapPass(camera->calculateViewMatrix(), mainLight.get());
 
 	for (size_t i = 0; i < pointLightCount; i++) {
-		OmniShadowMapPass(pointLights[i]);
+		OmniShadowMapPass(pointLights[i].get());
 	}
 	for (size_t i = 0; i < spotLightCount; i++) {
-		OmniShadowMapPass(spotLights[i]);
+		OmniShadowMapPass(spotLights[i].get());
 	}
 
-	PreZPass(projection, camera.calculateViewMatrix(), deltaTime);
+	PreZPass(projection, camera->calculateViewMatrix(), deltaTime);
 	SSAOPass(projection);
 	SSAOBlurPass();
-	RenderPass(projection, camera.calculateViewMatrix(), deltaTime);
+	RenderPass(projection, camera->calculateViewMatrix(), deltaTime);
 	BlurPass();
 	MotionBlurPass(fps);
 	BloomPass();
 
-	prevProjView = projection *camera.calculateViewMatrix();
+	prevProjView = projection *camera->calculateViewMatrix();
 	prevProj = projection;
-	prevView = camera.calculateViewMatrix();
+	prevView = camera->calculateViewMatrix();
 	glUseProgram(0);
 
 	mainWindow.swapBuffers();
@@ -412,7 +412,7 @@ void Game::CreateBillboard() {
 		0.5f, 0.5f, 0.0f,
 	};
 
-	Static_Mesh* obj = new Static_Mesh();
+	std::shared_ptr<Static_Mesh> obj = std::make_shared <Static_Mesh>();
 	obj->CreateBillboard(billboardVertices, billboardIndices, 12, 6);
 	billboardList.push_back(obj);
 
@@ -433,7 +433,7 @@ void Game::CreateParticles()
 		0.5f, 0.5f, 0.0f,
 	};
 		
-	ParticleSystem* obj = new ParticleSystem();
+	std::shared_ptr <ParticleSystem> obj = std::make_shared< ParticleSystem>();
 
 	obj->CreateParticlesMeshCPU(particlesVertices, particlesIndices, 12, 6);
 	particleList.push_back(obj);
@@ -456,7 +456,7 @@ void Game::CreateTerrain()
 	calcAverageNormals(terrainIndices, 6, terrainVertices, 44, 11, 5);
 	calcAverageTangents(terrainIndices, 6, terrainVertices, 44, 11, 8);
 
-	Static_Mesh* obj = new Static_Mesh();
+	std::shared_ptr < Static_Mesh> obj = std::make_shared< Static_Mesh>();
 	obj->CreateMeshNorm(terrainVertices, terrainIndices, 44, 6);
 	terrainList.push_back(obj);
 }
@@ -495,65 +495,65 @@ void Game::CreateObject() {
 	calcAverageNormals(floorIndices, 6, floorVertices, 44, 11, 5);
 	calcAverageTangents(floorIndices, 6, floorVertices, 44, 11, 8);
 
-	Static_Mesh* obj1 = new Static_Mesh();
+	std::shared_ptr < Static_Mesh> obj1 = std::make_shared <Static_Mesh>();
 	obj1->CreateMeshNorm(vertices, indices, 44, 12);
 	meshList.push_back(obj1);
 
-	Static_Mesh* obj2 = new Static_Mesh();
+	std::shared_ptr < Static_Mesh> obj2 = std::make_shared <Static_Mesh>();
 	obj2->CreateMeshNorm(vertices, indices, 44, 12);
 	meshList.push_back(obj2);
 
-	Static_Mesh* obj3 = new Static_Mesh();
+	std::shared_ptr < Static_Mesh> obj3 = std::make_shared <Static_Mesh>();
 	obj3->CreateMeshNorm(floorVertices, floorIndices, 44, 6);
 	meshList.push_back(obj3);
 
-	Static_Mesh* obj4 = new Static_Mesh();
+	std::shared_ptr < Static_Mesh> obj4 = std::make_shared <Static_Mesh>();
 	obj4->CreateMeshNorm(floorVertices, floorIndices, 44, 6);
 	meshList.push_back(obj4);
 }
 
 void Game::CreateShaders() {
 
-	environmentMapShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
-	irradianceConvolutionShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/irradiance_covolution.frag");
-	prefilterShader.CreateFromFiles("Shaders/cubemap.vert", "Shaders/prefilter.frag");
-	brdfShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/brdf.frag");
+	environmentMapShader->CreateFromFiles("Shaders/cubemap.vert", "Shaders/equirectangular_to_cubemap.frag");
+	irradianceConvolutionShader->CreateFromFiles("Shaders/cubemap.vert", "Shaders/irradiance_covolution.frag");
+	prefilterShader->CreateFromFiles("Shaders/cubemap.vert", "Shaders/prefilter.frag");
+	brdfShader->CreateFromFiles("Shaders/framebuffer.vert", "Shaders/brdf.frag");
 
-	directionalShadowShader.CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
-	omniShadowShader.CreateFromFiles("Shaders/omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
+	directionalShadowShader->CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
+	omniShadowShader->CreateFromFiles("Shaders/omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
 	
-	animDirectionalShadowShader.CreateFromFiles("Shaders/anim_directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
-	animOmniShadowShader.CreateFromFiles("Shaders/anim_omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
+	animDirectionalShadowShader->CreateFromFiles("Shaders/anim_directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
+	animOmniShadowShader->CreateFromFiles("Shaders/anim_omni_shadow_map.vert", "Shaders/omni_shadow_map.geom", "Shaders/omni_shadow_map.frag");
 
-	terrainDirectionalShadowShader.CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain_directional_shadow_map.tesse", "Shaders/directional_shadow_map.frag");
+	terrainDirectionalShadowShader->CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain_directional_shadow_map.tesse", "Shaders/directional_shadow_map.frag");
 	//terrainOmniDirectionalShadowShader.CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain_omni_directional_shadow_map.tesse", "Shaders/omni_shadow_map.geom", "Shaders/directional_shadow_map.frag");
 
-	static_preZPassShader.CreateFromFiles("Shaders/depth_framebuffer.vert", "Shaders/depth_framebuffer.frag");
-	anim_preZPassShader.CreateFromFiles("Shaders/anim_depth_framebuffer.vert", "Shaders/depth_framebuffer.frag");
-	terrain_preZPassShader.CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain_depth_framebuffer.tesse", "Shaders/depth_framebuffer.frag");
+	static_preZPassShader->CreateFromFiles("Shaders/depth_framebuffer.vert", "Shaders/depth_framebuffer.frag");
+	anim_preZPassShader->CreateFromFiles("Shaders/anim_depth_framebuffer.vert", "Shaders/depth_framebuffer.frag");
+	terrain_preZPassShader->CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain_depth_framebuffer.tesse", "Shaders/depth_framebuffer.frag");
 
-	ssaoShader.CreateFromFiles("Shaders/ssao_framebuffer.vert", "Shaders/ssao_framebuffer.frag");
+	ssaoShader->CreateFromFiles("Shaders/ssao_framebuffer.vert", "Shaders/ssao_framebuffer.frag");
 
-	ssaoBlurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/ssao_blur_framebuffer.frag");
+	ssaoBlurShader->CreateFromFiles("Shaders/framebuffer.vert", "Shaders/ssao_blur_framebuffer.frag");
 
-	Model_Shader* shader1 = new Model_Shader();
-	shader1->CreateFromFiles(vShader, fShader);
-	shaderList.push_back(*shader1);
+	std::shared_ptr<Model_Shader> shader1 = std::make_shared<Model_Shader>();
+	shader1->CreateFromFiles(vShader.c_str(), fShader.c_str());
+	shaderList.push_back(shader1);
 
-	Model_Shader* shader2 = new Model_Shader();
-	shader2->CreateFromFiles(avShader, fShader);
-	animShaderList.push_back(*shader2);
+	std::shared_ptr<Model_Shader> shader2 = std::make_shared < Model_Shader>();
+	shader2->CreateFromFiles(avShader.c_str(), fShader.c_str());
+	animShaderList.push_back(shader2);
 
-	terrainShader.CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain.tesse", "Shaders/terrain.frag");
-	billboardShader.CreateFromFiles("Shaders/billboard.vert", "Shaders/billboard.frag");
+	terrainShader->CreateFromFiles("Shaders/terrain.vert", "Shaders/terrain.tessc", "Shaders/terrain.tesse", "Shaders/terrain.frag");
+	billboardShader->CreateFromFiles("Shaders/billboard.vert", "Shaders/billboard.frag");
 
-	particleShader.CreateFromFiles("Shaders/particles.vert", "Shaders/particles.frag");
+	particleShader->CreateFromFiles("Shaders/particles.vert", "Shaders/particles.frag");
 
-	hdrShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/hdr_framebuffer.frag");
+	hdrShader->CreateFromFiles("Shaders/framebuffer.vert", "Shaders/hdr_framebuffer.frag");
 
-	motionBlurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/motionBlur_framebuffer.frag");
+	motionBlurShader->CreateFromFiles("Shaders/framebuffer.vert", "Shaders/motionBlur_framebuffer.frag");
 
-	blurShader.CreateFromFiles("Shaders/framebuffer.vert", "Shaders/blur_framebuffer.frag");
+	blurShader->CreateFromFiles("Shaders/framebuffer.vert", "Shaders/blur_framebuffer.frag");
 
 	shader1 = nullptr;
 	shader2 = nullptr;
@@ -568,16 +568,16 @@ void Game::RenderBillboardScene()
 	prevPV = prevProjView;
 	glUniformMatrix4fv(uniformPrevPV0, 1, GL_FALSE, glm::value_ptr(prevPV));
 
-	grassTexture.UseTexture(0);
+	grassTexture->UseTexture(0);
 	billboardList[0]->RenderMesh();
 }
 
 void Game::RenderParticlesScene(GLfloat deltaTime)
 {
 	particleList[0]->GenerateParticlesCPU(deltaTime, glm::vec3(10.0f - terrainScaleFactor, 33.0f, -terrainScaleFactor));
-	particleList[0]->SimulateParticlesCPU(camera.getCameraPosition(), deltaTime);
+	particleList[0]->SimulateParticlesCPU(camera->getCameraPosition(), deltaTime);
 	particleList[0]->UpdateParticlesMeshCPU();
-	plainTexture.UseTexture(0);
+	plainTexture->UseTexture(0);
 	particleList[0]->RenderParticlesMeshCPU();
 }
 
@@ -593,27 +593,27 @@ void Game::RenderTerrain(bool shadow, bool depth)
 	glUniformMatrix4fv(uniformModel2, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * terrainList[0]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM2, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	terrainTextureDisp.UseTexture(0);
-	terrainTextureBlend.UseTexture(10);
+	terrainTextureDisp->UseTexture(0);
+	terrainTextureBlend->UseTexture(10);
 	if(shadow)
 	{
-		terrainDirectionalShadowShader.SetDisplacementMap(1);
+		terrainDirectionalShadowShader->SetDisplacementMap(1);
 	}
 	else if (depth) 
 	{
-		terrain_preZPassShader.SetDisplacementMap(1);
+		terrain_preZPassShader->SetDisplacementMap(1);
 	}
 	else 
 	{
-		terrainShader.SetDisplacementMap(1);
+		terrainShader->SetDisplacementMap(1);
 	}
-	terrainShader.SetBlendMap(11);
-	terrainTexture.UseTextureArray(11);
-	terrainTextureMetal.UseTextureArray(12);
-	terrainTextureNorm.UseTextureArray(14);
-	terrainTextureRough.UseTextureArray(15);
-	terrainTexturePara.UseTextureArray(16);
-	dullTerrainMaterial.UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformNormalMap2, uniformRoughnessMap2, uniformParallaxMap2);
+	terrainShader->SetBlendMap(11);
+	terrainTexture->UseTextureArray(11);
+	terrainTextureMetal->UseTextureArray(12);
+	terrainTextureNorm->UseTextureArray(14);
+	terrainTextureRough->UseTextureArray(15);
+	terrainTexturePara->UseTextureArray(16);
+	dullTerrainMaterial->UseMaterial(uniformAlbedoMap2, uniformMetallicMap2, uniformNormalMap2, uniformRoughnessMap2, uniformParallaxMap2);
 	
 	terrainList[0]->RenderTessellatedMesh();
 	terrainList[0]->prevMesh = model;	
@@ -627,7 +627,7 @@ void Game::RenderEnvCubeMap(bool is_cubeMap)
 	}
 	else
 	{
-		environmentTexture.UseTexture(0);
+		environmentTexture->UseTexture(0);
 	}
 	mesh_cube->RenderCube();
 }
@@ -644,13 +644,13 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * meshList[0]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	rustedMetal.UseTexture(0);
-	rustedMetalMetal.UseTexture(5);
-	rustedMetalNorm.UseTexture(6);
-	rustedMetalRough.UseTexture(10);
-	rustedMetalPara.UseTexture(11);
-	rustedMetalGlow.UseTexture(12);
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	rustedMetal->UseTexture(0);
+	rustedMetalMetal->UseTexture(5);
+	rustedMetalNorm->UseTexture(6);
+	rustedMetalRough->UseTexture(10);
+	rustedMetalPara->UseTexture(11);
+	rustedMetalGlow->UseTexture(12);
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[0]->RenderMesh();
 	meshList[0]->prevMesh = model;
 
@@ -665,22 +665,22 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	//model = glm::rotate(model, toRadians, glm::vec3(0.0f, 1.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView*cube.prevModel;
+	prevPVM = prevProjView*cube->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	cube.RenderModel();
-	cube.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	cube->RenderModel();
+	cube->prevModel = model;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(-terrainScaleFactor, 35.0f, 5.5f - terrainScaleFactor));
 	model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * sphere.prevModel;
+	prevPVM = prevProjView * sphere->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	sphere.RenderModel();
-	sphere.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	sphere->RenderModel();
+	sphere->prevModel = model;
 	
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(-terrainScaleFactor, 30.0f, -2.5f - terrainScaleFactor));
@@ -689,13 +689,13 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * meshList[1]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	metalDebrisTexture.UseTexture(0);
-	metalDebrisTextureMetal.UseTexture(5);
-	metalDebrisTextureNorm.UseTexture(6);
-	metalDebrisTextureRough.UseTexture(10);
-	metalDebrisTexturePara.UseTexture(11);
-	metalDebrisTextureGlow.UseTexture(12);
-	dullMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	metalDebrisTexture->UseTexture(0);
+	metalDebrisTextureMetal->UseTexture(5);
+	metalDebrisTextureNorm->UseTexture(6);
+	metalDebrisTextureRough->UseTexture(10);
+	metalDebrisTexturePara->UseTexture(11);
+	metalDebrisTextureGlow->UseTexture(12);
+	dullMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[1]->RenderMesh();
 	meshList[1]->prevMesh = model;
 
@@ -708,13 +708,13 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * meshList[2]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	floorTexture.UseTexture(0);
-	floorTextureMetal.UseTexture(5);
-	floorTextureNorm.UseTexture(6);
-	floorTextureRough.UseTexture(10);
-	floorTexturePara.UseTexture(11);
-	floorTextureGlow.UseTexture(12);
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	floorTexture->UseTexture(0);
+	floorTextureMetal->UseTexture(5);
+	floorTextureNorm->UseTexture(6);
+	floorTextureRough->UseTexture(10);
+	floorTexturePara->UseTexture(11);
+	floorTextureGlow->UseTexture(12);
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[2]->RenderMesh();
 	meshList[2]->prevMesh = model;
 
@@ -725,13 +725,13 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 	prevPVM = prevProjView * meshList[3]->prevMesh;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	brickTexture.UseTexture(0);
-	brickTextureMetal.UseTexture(5);
-	brickTextureNorm.UseTexture(6);
-	brickTextureRough.UseTexture(10);
-	brickTexturePara.UseTexture(11);
-	brickTextureGlow.UseTexture(12);
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	brickTexture->UseTexture(0);
+	brickTextureMetal->UseTexture(5);
+	brickTextureNorm->UseTexture(6);
+	brickTextureRough->UseTexture(10);
+	brickTexturePara->UseTexture(11);
+	brickTextureGlow->UseTexture(12);
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
 	meshList[3]->RenderMesh();
 	meshList[3]->prevMesh = model;
 
@@ -818,11 +818,11 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	//model = glm::rotate(model, toRadians, glm::vec3(0.0f, 1.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * sniper.prevModel;
+	prevPVM = prevProjView * sniper->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	sniper.RenderModel();
-	sniper.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	sniper->RenderModel();
+	sniper->prevModel = model;
 
 	model = glm::mat4();
 	//model = glm::rotate(model, -aircraftAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -832,11 +832,11 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	model = glm::rotate(model, -90.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * gun.prevModel;
+	prevPVM = prevProjView * gun->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	gun.RenderModel();
-	gun.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	gun->RenderModel();
+	gun->prevModel = model;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(pointLights[0]->GetPosition().x, pointLights[0]->GetPosition().y+1.0f, pointLights[0]->GetPosition().z));
@@ -844,22 +844,22 @@ void Game::RenderScene(glm::mat4 projectionMatrix, glm::mat4 viewMatrix) {
 	//model = glm::rotate(model, 180.0f * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * bulb.prevModel;
+	prevPVM = prevProjView * bulb->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	bulb.RenderModel();
-	bulb.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	bulb->RenderModel();
+	bulb->prevModel = model;
 
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(-terrainScaleFactor, 37.0f, 1.0f - terrainScaleFactor));
 	//model = glm::rotate(model, curAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
 	glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * anymodel.prevModel;
+	prevPVM = prevProjView * anymodel->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
-	anymodel.RenderModel();
-	anymodel.prevModel = model;
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap, uniformMetallicMap, uniformNormalMap, uniformRoughnessMap, uniformParallaxMap, uniformGlowMap);
+	anymodel->RenderModel();
+	anymodel->prevModel = model;
 }
 
 void Game::RenderAnimScene(bool shadow, bool depth) {
@@ -871,67 +871,67 @@ void Game::RenderAnimScene(bool shadow, bool depth) {
 	model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::scale(model, glm::vec3(0.1, 0.1f, 0.1f));
 	glUniformMatrix4fv(uniformModel1, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * anim.prevModel;
+	prevPVM = prevProjView * anim->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM1, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1, uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1, uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
 
 	if (shadow)
 	{
-		anim.initShaders(animDirectionalShadowShader.GetShaderID());
+		anim->initShaders(animDirectionalShadowShader->GetShaderID());
 	}
 	else if (depth)
 	{
-		anim.initShaders(anim_preZPassShader.GetShaderID());
+		anim->initShaders(anim_preZPassShader->GetShaderID());
 	}
 	else{
-		anim.initShaders(animShaderList[0].GetShaderID());
+		anim->initShaders(animShaderList[0]->GetShaderID());
 	}
-	anim.RenderModel();
-	anim.prevModel = model;
+	anim->RenderModel();
+	anim->prevModel = model;
 	
 	model = glm::mat4();
 	model = glm::translate(model, glm::vec3(6.0f - terrainScaleFactor, 28.2f, -5.0f - terrainScaleFactor));
 	model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));  //if you put the rotate at the last place(i.e on the top) it will have a bouncy effect
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 	glUniformMatrix4fv(uniformModel1, 1, GL_FALSE, glm::value_ptr(model));
-	prevPVM = prevProjView * anim2.prevModel;
+	prevPVM = prevProjView * anim2->prevModel;
 	glUniformMatrix4fv(uniformPrevPVM1, 1, GL_FALSE, glm::value_ptr(prevPVM));
-	shinyMaterialGlow.UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1,uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
+	shinyMaterialGlow->UseMaterial(uniformAlbedoMap1, uniformMetallicMap1, uniformNormalMap1, uniformRoughnessMap1, uniformParallaxMap1, uniformGlowMap1);
 
 	if (shadow)
 	{
-		anim2.initShaders(animDirectionalShadowShader.GetShaderID());
+		anim2->initShaders(animDirectionalShadowShader->GetShaderID());
 	}
 	else if (depth)
 	{
-		anim2.initShaders(anim_preZPassShader.GetShaderID());
+		anim2->initShaders(anim_preZPassShader->GetShaderID());
 	}
 	else
 	{
-		anim2.initShaders(animShaderList[0].GetShaderID());
+		anim2->initShaders(animShaderList[0]->GetShaderID());
 	}
 
-	anim2.RenderModel();
-	anim2.prevModel = model;
+	anim2->RenderModel();
+	anim2->prevModel = model;
 }
 
 void Game::EnvironmentMapPass()
 {
-	environmentMapShader.UseShader();
-	environmentMapShader.SetTexture(1);
+	environmentMapShader->UseShader();
+	environmentMapShader->SetTexture(1);
 
-	uniformProjectionEnv = environmentMapShader.GetProjectionLocation();
+	uniformProjectionEnv = environmentMapShader->GetProjectionLocation();
 	glUniformMatrix4fv(uniformProjectionEnv, 1, GL_FALSE, glm::value_ptr(captureProjection));
 
 	glViewport(0, 0, environmentMap->GetWidth(), environmentMap->GetHeight());
 	environmentMap->Write(-1);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
-		uniformViewEnv = environmentMapShader.GetViewLocation();
+		uniformViewEnv = environmentMapShader->GetViewLocation();
 		glUniformMatrix4fv(uniformViewEnv, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
 		environmentMap->Write(i);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		environmentMapShader.Validate();
+		environmentMapShader->Validate();
 
 		RenderEnvCubeMap(false);
 	}
@@ -942,21 +942,21 @@ void Game::EnvironmentMapPass()
 
 void Game::IrradianceConvolutionPass()
 {
-	irradianceConvolutionShader.UseShader();
-	irradianceConvolutionShader.SetSkybox(1);
+	irradianceConvolutionShader->UseShader();
+	irradianceConvolutionShader->SetSkybox(1);
 
-	uniformProjectionIrr = irradianceConvolutionShader.GetProjectionLocation();
+	uniformProjectionIrr = irradianceConvolutionShader->GetProjectionLocation();
 	glUniformMatrix4fv(uniformProjectionIrr, 1, GL_FALSE, glm::value_ptr(captureProjection));
 
 	glViewport(0, 0, irradianceMap->GetWidth(), irradianceMap->GetHeight());
 	irradianceMap->Write(-1);
 	for (unsigned int i = 0; i < 6; ++i)
 	{
-		uniformViewIrr = irradianceConvolutionShader.GetViewLocation();
+		uniformViewIrr = irradianceConvolutionShader->GetViewLocation();
 		glUniformMatrix4fv(uniformViewIrr, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
 		irradianceMap->Write(i);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		irradianceConvolutionShader.Validate();
+		irradianceConvolutionShader->Validate();
 
 		RenderEnvCubeMap(true);
 	}
@@ -965,9 +965,9 @@ void Game::IrradianceConvolutionPass()
 
 void Game::PrefilterPass()
 {
-	prefilterShader.UseShader();
-	prefilterShader.SetSkybox(1);
-	uniformProjectionPreF = prefilterShader.GetProjectionLocation();
+	prefilterShader->UseShader();
+	prefilterShader->SetSkybox(1);
+	uniformProjectionPreF = prefilterShader->GetProjectionLocation();
 	glUniformMatrix4fv(uniformProjectionPreF, 1, GL_FALSE, glm::value_ptr(captureProjection));
 
 	prefilterMap->Write(-2, 0, 0, 0);
@@ -982,13 +982,13 @@ void Game::PrefilterPass()
 		glViewport(0, 0, mipWidth, mipHeight);
 
 		float roughness = (float)mip / (float)(maxMipLevels - 1);
-		prefilterShader.SetRoughness(roughness);
+		prefilterShader->SetRoughness(roughness);
 		for (unsigned int i = 0; i < 6; ++i) {
-			uniformViewPreF = prefilterShader.GetViewLocation();
+			uniformViewPreF = prefilterShader->GetViewLocation();
 			glUniformMatrix4fv(uniformViewPreF, 1, GL_FALSE, glm::value_ptr(captureViews[i]));
 			prefilterMap->Write(i, 0, 0, mip);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			prefilterShader.Validate();
+			prefilterShader->Validate();
 
 			RenderEnvCubeMap(true);
 		}
@@ -1003,7 +1003,7 @@ void Game::BRDFPass()
 	brdfMap->Write();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	brdfShader.UseShader();
+	brdfShader->UseShader();
 	quad->RenderQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1012,7 +1012,7 @@ void Game::BRDFPass()
 void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* light) {
 	
 	testLitView[0] = light->CalculateCascadeLightTransform();
-	mainLight->GetShadowMap()->CalcOrthProjs(camera.calculateViewMatrix(), testLitView, 60.0f);
+	mainLight->GetShadowMap()->CalcOrthProjs(camera->calculateViewMatrix(), testLitView, 60.0f);
 
 	for (unsigned int i = 0; i < NUM_CASCADES; ++i)
 	{
@@ -1026,35 +1026,35 @@ void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* ligh
 
 		glm::mat4 projView = light->GetShadowMap()->GetProjMat(vView[i], i) * vView[i];
 		
-		directionalShadowShader.UseShader();
-		uniformModel = directionalShadowShader.GetModelLocation();
+		directionalShadowShader->UseShader();
+		uniformModel = directionalShadowShader->GetModelLocation();
 
-		directionalShadowShader.SetDirectionalLightTransform(&projView);
+		directionalShadowShader->SetDirectionalLightTransform(&projView);
 
-		directionalShadowShader.Validate();
+		directionalShadowShader->Validate();
 
 		RenderScene();
 
 
-		animDirectionalShadowShader.UseShader();
+		animDirectionalShadowShader->UseShader();
 
-		uniformModel1 = animDirectionalShadowShader.GetModelLocation();
+		uniformModel1 = animDirectionalShadowShader->GetModelLocation();
 
-		animDirectionalShadowShader.SetDirectionalLightTransform(&projView);
+		animDirectionalShadowShader->SetDirectionalLightTransform(&projView);
 
-		animDirectionalShadowShader.Validate();
+		animDirectionalShadowShader->Validate();
 
 		RenderAnimScene(true, false);
 	
-		terrainDirectionalShadowShader.UseShader();
-		uniformModel2 = terrainDirectionalShadowShader.GetModelLocation();
-		uniformEyePosition2 = terrainDirectionalShadowShader.GetEyePositionLocation();
-		uniformDispFactor = terrainDirectionalShadowShader.GetDispFactorLocation();
+		terrainDirectionalShadowShader->UseShader();
+		uniformModel2 = terrainDirectionalShadowShader->GetModelLocation();
+		uniformEyePosition2 = terrainDirectionalShadowShader->GetEyePositionLocation();
+		uniformDispFactor = terrainDirectionalShadowShader->GetDispFactorLocation();
 
-		terrainDirectionalShadowShader.SetDirectionalLightTransform(&projView);
-		glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		terrainDirectionalShadowShader->SetDirectionalLightTransform(&projView);
+		glUniform3f(uniformEyePosition2, camera->getCameraPosition().x, camera->getCameraPosition().y, camera->getCameraPosition().z);
 
-		terrainDirectionalShadowShader.Validate();
+		terrainDirectionalShadowShader->Validate();
 
 		RenderTerrain(true, false);
 	}
@@ -1063,36 +1063,36 @@ void Game::DirectionalShadowMapPass(glm::mat4 viewMatrix, DirectionalLight* ligh
 
 void Game::OmniShadowMapPass(PointLight* light) {
 
-	omniShadowShader.UseShader();
+	omniShadowShader->UseShader();
 
 	glViewport(0, 0, light->GetShadowMap()->GetWidth(), light->GetShadowMap()->GetHeight());
 
 	light->GetShadowMap()->Write();
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	uniformModel = omniShadowShader.GetModelLocation();
-	uniformOmniLightPos = omniShadowShader.GetOmniLightPosLocation();
-	uniformFarPlane = omniShadowShader.GetFarPlaneLocation();
+	uniformModel = omniShadowShader->GetModelLocation();
+	uniformOmniLightPos = omniShadowShader->GetOmniLightPosLocation();
+	uniformFarPlane = omniShadowShader->GetFarPlaneLocation();
 
 	glUniform3f(uniformOmniLightPos, light->GetPosition().x, light->GetPosition().y, light->GetPosition().z);
 	glUniform1f(uniformFarPlane, light->GetFarPlane());
-	omniShadowShader.SetLightMatrices(light->CalculateLightTransform());
+	omniShadowShader->SetLightMatrices(light->CalculateLightTransform());
 
-	omniShadowShader.Validate();
+	omniShadowShader->Validate();
 
 	RenderScene();
 
-	animOmniShadowShader.UseShader();
+	animOmniShadowShader->UseShader();
 
-	uniformModel1 = animOmniShadowShader.GetModelLocation();
-	uniformOmniLightPos1 = animOmniShadowShader.GetOmniLightPosLocation();
-	uniformFarPlane1 = animOmniShadowShader.GetFarPlaneLocation();
+	uniformModel1 = animOmniShadowShader->GetModelLocation();
+	uniformOmniLightPos1 = animOmniShadowShader->GetOmniLightPosLocation();
+	uniformFarPlane1 = animOmniShadowShader->GetFarPlaneLocation();
 
 	glUniform3f(uniformOmniLightPos1, light->GetPosition().x, light->GetPosition().y, light->GetPosition().z);
 	glUniform1f(uniformFarPlane1, light->GetFarPlane());
-	animOmniShadowShader.SetLightMatrices(light->CalculateLightTransform());
+	animOmniShadowShader->SetLightMatrices(light->CalculateLightTransform());
 
-	animOmniShadowShader.Validate();
+	animOmniShadowShader->Validate();
 
 	RenderAnimScene(true, false);
 
@@ -1107,42 +1107,42 @@ void Game::PreZPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat de
 	 //clear everything
 	glClear(GL_DEPTH_BUFFER_BIT);  
 
-	terrain_preZPassShader.UseShader();
-	uniformModel2 = terrain_preZPassShader.GetModelLocation();
-	uniformProjection2 = terrain_preZPassShader.GetProjectionLocation();
-	uniformView2 = terrain_preZPassShader.GetViewLocation();
-	uniformEyePosition2 = terrain_preZPassShader.GetEyePositionLocation();
-	uniformDispFactor = terrain_preZPassShader.GetDispFactorLocation();
+	terrain_preZPassShader->UseShader();
+	uniformModel2 = terrain_preZPassShader->GetModelLocation();
+	uniformProjection2 = terrain_preZPassShader->GetProjectionLocation();
+	uniformView2 = terrain_preZPassShader->GetViewLocation();
+	uniformEyePosition2 = terrain_preZPassShader->GetEyePositionLocation();
+	uniformDispFactor = terrain_preZPassShader->GetDispFactorLocation();
 
 	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	glUniform3f(uniformEyePosition2, camera->getCameraPosition().x, camera->getCameraPosition().y, camera->getCameraPosition().z);
 
-	terrain_preZPassShader.Validate();
+	terrain_preZPassShader->Validate();
 
 	RenderTerrain(false, true);
 
-	static_preZPassShader.UseShader();
-	uniformModel = static_preZPassShader.GetModelLocation();
-	uniformProjection = static_preZPassShader.GetProjectionLocation();
-	uniformView = static_preZPassShader.GetViewLocation();
+	static_preZPassShader->UseShader();
+	uniformModel = static_preZPassShader->GetModelLocation();
+	uniformProjection = static_preZPassShader->GetProjectionLocation();
+	uniformView = static_preZPassShader->GetViewLocation();
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 
-	static_preZPassShader.Validate();
+	static_preZPassShader->Validate();
 
 	RenderScene();
 
-	anim_preZPassShader.UseShader();
-	uniformModel1 = anim_preZPassShader.GetModelLocation();
-	uniformProjection1 = anim_preZPassShader.GetProjectionLocation();
-	uniformView1 = anim_preZPassShader.GetViewLocation();
+	anim_preZPassShader->UseShader();
+	uniformModel1 = anim_preZPassShader->GetModelLocation();
+	uniformProjection1 = anim_preZPassShader->GetProjectionLocation();
+	uniformView1 = anim_preZPassShader->GetViewLocation();
 
 	glUniformMatrix4fv(uniformProjection1, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView1, 1, GL_FALSE, glm::value_ptr(viewMatrix));
 	
-	anim_preZPassShader.Validate();
+	anim_preZPassShader->Validate();
 
 	RenderAnimScene(false, true);
 
@@ -1155,13 +1155,13 @@ void Game::SSAOPass(glm::mat4 projectionMatrix)
 	ssao->Write();
 	glClear(GL_COLOR_BUFFER_BIT); 
 
-	ssaoShader.UseShader();
+	ssaoShader->UseShader();
 	
 	depth->Read(GL_TEXTURE1);
-	ssaoShader.SetTexture(1);
+	ssaoShader->SetTexture(1);
 
-	SSAONoiseTexture.UseTexture(1);
-	ssaoShader.SetNoiseTexture(2);
+	SSAONoiseTexture->UseTexture(1);
+	ssaoShader->SetNoiseTexture(2);
 
 	quad->RenderQuad();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1174,9 +1174,9 @@ void Game::SSAOBlurPass()
 	ssaoBlur->Write();
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	ssaoBlurShader.UseShader();
+	ssaoBlurShader->UseShader();
 	ssao->Read(GL_TEXTURE1);
-	ssaoBlurShader.SetTexture(1);
+	ssaoBlurShader->SetTexture(1);
 
 	quad->RenderQuad();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1196,161 +1196,161 @@ void Game::RenderPass(glm::mat4 projectionMatrix, glm::mat4 viewMatrix, GLfloat 
 	brdfMap->Read(GL_TEXTURE10);
 	ssaoBlur->Read(GL_TEXTURE14);
 
-	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap); //should be at the end to prevent overdraw,here becoz of blending issues
+	skybox->DrawHDRSkybox(viewMatrix, projectionMatrix, prevProj, prevView, environmentMap.get()); //should be at the end to prevent overdraw,here becoz of blending issues
 
-	terrainShader.UseShader();
+	terrainShader->UseShader();
 
-	uniformModel2 = terrainShader.GetModelLocation();
-	uniformProjection2 = terrainShader.GetProjectionLocation();
-	uniformView2 = terrainShader.GetViewLocation();
-	uniformPrevPVM2 = terrainShader.GetPrevPVMLocation();
-	uniformEyePosition2 = terrainShader.GetEyePositionLocation();
-	uniformHeightScale2 = terrainShader.GetHeightScaleLocation();
-	uniformDispFactor = terrainShader.GetDispFactorLocation();
-	uniformAlbedoMap2 = terrainShader.GetAlbedoLocation();
-	uniformMetallicMap2 = terrainShader.GetMetallicLocation();
-	uniformNormalMap2 = terrainShader.GetNormalLocation();
-	uniformRoughnessMap2 = terrainShader.GetRoughnessLocation();
-	uniformParallaxMap2 = terrainShader.GetParallaxLocation();
+	uniformModel2 = terrainShader->GetModelLocation();
+	uniformProjection2 = terrainShader->GetProjectionLocation();
+	uniformView2 = terrainShader->GetViewLocation();
+	uniformPrevPVM2 = terrainShader->GetPrevPVMLocation();
+	uniformEyePosition2 = terrainShader->GetEyePositionLocation();
+	uniformHeightScale2 = terrainShader->GetHeightScaleLocation();
+	uniformDispFactor = terrainShader->GetDispFactorLocation();
+	uniformAlbedoMap2 = terrainShader->GetAlbedoLocation();
+	uniformMetallicMap2 = terrainShader->GetMetallicLocation();
+	uniformNormalMap2 = terrainShader->GetNormalLocation();
+	uniformRoughnessMap2 = terrainShader->GetRoughnessLocation();
+	uniformParallaxMap2 = terrainShader->GetParallaxLocation();
 
 	glUniformMatrix4fv(uniformProjection2, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView2, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformEyePosition2, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	glUniform3f(uniformEyePosition2, camera->getCameraPosition().x, camera->getCameraPosition().y, camera->getCameraPosition().z);
 	glUniform1f(uniformHeightScale2, 0.02f);
 
-	terrainShader.SetDirectionalLight(mainLight);
-	terrainShader.SetPointLight(pointLights[0], pointLightCount, 5, 0);
-	terrainShader.SetSpotLight(spotLights[0], spotLightCount, 5 + pointLightCount, pointLightCount);
+	terrainShader->SetDirectionalLight(mainLight.get());
+	terrainShader->SetPointLight(pointLights[0].get(), pointLightCount, 5, 0);
+	terrainShader->SetSpotLight(spotLights[0].get(), spotLightCount, 5 + pointLightCount, pointLightCount);
 
 	for (size_t i = 0; i < NUM_CASCADES; ++i)
 	{
 		glm::mat4 projView = mainLight->GetShadowMap()->GetProjMat(vView[i], i) * vView[i];
-		terrainShader.SetDirectionalLightTransforms(i, &projView);
+		terrainShader->SetDirectionalLightTransforms(i, &projView);
 	}
 
-	terrainShader.SetDirectionalShadowMaps(mainLight, NUM_CASCADES, 2);
-	terrainShader.SetAOMap(14);
-	terrainShader.SetIrradianceMap(8);
-	terrainShader.SetPrefilterMap(9);
-	terrainShader.SetBRDFLUT(10);
+	terrainShader->SetDirectionalShadowMaps(mainLight.get(), NUM_CASCADES, 2);
+	terrainShader->SetAOMap(14);
+	terrainShader->SetIrradianceMap(8);
+	terrainShader->SetPrefilterMap(9);
+	terrainShader->SetBRDFLUT(10);
 
-	terrainShader.Validate();
+	terrainShader->Validate();
 
 	RenderTerrain(false, false);
 
-	shaderList[0].UseShader();
+	shaderList[0]->UseShader();
 
-	uniformModel = shaderList[0].GetModelLocation();
-	uniformProjection = shaderList[0].GetProjectionLocation();
-	uniformView = shaderList[0].GetViewLocation();
-	uniformPrevPVM = shaderList[0].GetPrevPVMLocation();
-	uniformEyePosition = shaderList[0].GetEyePositionLocation();
-	uniformHeightScale = shaderList[0].GetHeightScaleLocation();
-	uniformAlbedoMap = shaderList[0].GetAlbedoLocation();
-	uniformMetallicMap = shaderList[0].GetMetallicLocation();
-	uniformNormalMap = shaderList[0].GetNormalLocation();
-	uniformRoughnessMap = shaderList[0].GetRoughnessLocation();
-	uniformParallaxMap = shaderList[0].GetParallaxLocation();
-	uniformGlowMap = shaderList[0].GetGlowLocation();
+	uniformModel = shaderList[0]->GetModelLocation();
+	uniformProjection = shaderList[0]->GetProjectionLocation();
+	uniformView = shaderList[0]->GetViewLocation();
+	uniformPrevPVM = shaderList[0]->GetPrevPVMLocation();
+	uniformEyePosition = shaderList[0]->GetEyePositionLocation();
+	uniformHeightScale = shaderList[0]->GetHeightScaleLocation();
+	uniformAlbedoMap = shaderList[0]->GetAlbedoLocation();
+	uniformMetallicMap = shaderList[0]->GetMetallicLocation();
+	uniformNormalMap = shaderList[0]->GetNormalLocation();
+	uniformRoughnessMap = shaderList[0]->GetRoughnessLocation();
+	uniformParallaxMap = shaderList[0]->GetParallaxLocation();
+	uniformGlowMap = shaderList[0]->GetGlowLocation();
 
 	glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	glUniform3f(uniformEyePosition, camera->getCameraPosition().x, camera->getCameraPosition().y, camera->getCameraPosition().z);
 	glUniform1f(uniformHeightScale, 0.02f);
 
-	shaderList[0].SetDirectionalLight(mainLight);
-	shaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
-	shaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
-	shaderList[0].SetDirectionalLightTransform(mainLight->CalculateLightTransform());
+	shaderList[0]->SetDirectionalLight(mainLight.get());
+	shaderList[0]->SetPointLight(pointLights[0].get(), pointLightCount, 3, 0);
+	shaderList[0]->SetSpotLight(spotLights[0].get(), spotLightCount, 3 + pointLightCount, pointLightCount);
+	shaderList[0]->SetDirectionalLightTransform(mainLight->CalculateLightTransform());
 
-	shaderList[0].SetDirectionalShadowMap(2);
-	shaderList[0].SetIrradianceMap(8);
-	shaderList[0].SetPrefilterMap(9);
-	shaderList[0].SetBRDFLUT(10);
-	shaderList[0].SetAOMap(14);
+	shaderList[0]->SetDirectionalShadowMap(2);
+	shaderList[0]->SetIrradianceMap(8);
+	shaderList[0]->SetPrefilterMap(9);
+	shaderList[0]->SetBRDFLUT(10);
+	shaderList[0]->SetAOMap(14);
 
-	shaderList[0].Validate();
+	shaderList[0]->Validate();
 
 	RenderScene(projectionMatrix, viewMatrix);
 
-	animShaderList[0].UseShader();
+	animShaderList[0]->UseShader();
 
-	uniformModel1 = animShaderList[0].GetModelLocation();
-	uniformProjection1 = animShaderList[0].GetProjectionLocation();
-	uniformView1 = animShaderList[0].GetViewLocation();
-	uniformPrevPVM1 = animShaderList[0].GetPrevPVMLocation();
-	uniformEyePosition1 = animShaderList[0].GetEyePositionLocation();
-	uniformHeightScale1 = animShaderList[0].GetHeightScaleLocation();
-	uniformAlbedoMap1 = animShaderList[0].GetAlbedoLocation();
-	uniformMetallicMap1 = animShaderList[0].GetMetallicLocation();
-	uniformNormalMap1 = animShaderList[0].GetNormalLocation();
-	uniformRoughnessMap1 = animShaderList[0].GetRoughnessLocation();
-	uniformParallaxMap1 = animShaderList[0].GetParallaxLocation();
-	uniformGlowMap1 = animShaderList[0].GetGlowLocation();
+	uniformModel1 = animShaderList[0]->GetModelLocation();
+	uniformProjection1 = animShaderList[0]->GetProjectionLocation();
+	uniformView1 = animShaderList[0]->GetViewLocation();
+	uniformPrevPVM1 = animShaderList[0]->GetPrevPVMLocation();
+	uniformEyePosition1 = animShaderList[0]->GetEyePositionLocation();
+	uniformHeightScale1 = animShaderList[0]->GetHeightScaleLocation();
+	uniformAlbedoMap1 = animShaderList[0]->GetAlbedoLocation();
+	uniformMetallicMap1 = animShaderList[0]->GetMetallicLocation();
+	uniformNormalMap1 = animShaderList[0]->GetNormalLocation();
+	uniformRoughnessMap1 = animShaderList[0]->GetRoughnessLocation();
+	uniformParallaxMap1 = animShaderList[0]->GetParallaxLocation();
+	uniformGlowMap1 = animShaderList[0]->GetGlowLocation();
 
 	glUniformMatrix4fv(uniformProjection1, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView1, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformEyePosition1, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+	glUniform3f(uniformEyePosition1, camera->getCameraPosition().x, camera->getCameraPosition().y, camera->getCameraPosition().z);
 
 	glUniform1f(uniformHeightScale1, 0.0f);
 
-	animShaderList[0].SetDirectionalLight(mainLight);
-	animShaderList[0].SetPointLight(pointLights[0], pointLightCount, 3, 0);
-	animShaderList[0].SetSpotLight(spotLights[0], spotLightCount, 3 + pointLightCount, pointLightCount);
-	animShaderList[0].SetDirectionalLightTransform(mainLight->CalculateLightTransform());
+	animShaderList[0]->SetDirectionalLight(mainLight.get());
+	animShaderList[0]->SetPointLight(pointLights[0].get(), pointLightCount, 3, 0);
+	animShaderList[0]->SetSpotLight(spotLights[0].get(), spotLightCount, 3 + pointLightCount, pointLightCount);
+	animShaderList[0]->SetDirectionalLightTransform(mainLight->CalculateLightTransform());
 
-	animShaderList[0].SetDirectionalShadowMap(2);
-	animShaderList[0].SetAOMap(14);
-	animShaderList[0].SetIrradianceMap(8);
-	animShaderList[0].SetPrefilterMap(9);
-	animShaderList[0].SetBRDFLUT(10);
+	animShaderList[0]->SetDirectionalShadowMap(2);
+	animShaderList[0]->SetAOMap(14);
+	animShaderList[0]->SetIrradianceMap(8);
+	animShaderList[0]->SetPrefilterMap(9);
+	animShaderList[0]->SetBRDFLUT(10);
 
-	animShaderList[0].Validate();
+	animShaderList[0]->Validate();
 
 	RenderAnimScene(false, false);
 
-	billboardShader.UseShader();
+	billboardShader->UseShader();
 
-	uniformProjection0 = billboardShader.GetProjectionLocation();
-	uniformView0 = billboardShader.GetViewLocation();
-	uniformPrevPV0 = billboardShader.GetPrevPVMLocation();
-	uniformCameraUp = billboardShader.GetCameraUpLocation();
-	uniformCameraRight = billboardShader.GetCameraRightLocation();
-	uniformPos = billboardShader.GetPosLocation();
-	uniformSize = billboardShader.GetSizeLocation();
+	uniformProjection0 = billboardShader->GetProjectionLocation();
+	uniformView0 = billboardShader->GetViewLocation();
+	uniformPrevPV0 = billboardShader->GetPrevPVMLocation();
+	uniformCameraUp = billboardShader->GetCameraUpLocation();
+	uniformCameraRight = billboardShader->GetCameraRightLocation();
+	uniformPos = billboardShader->GetPosLocation();
+	uniformSize = billboardShader->GetSizeLocation();
 
 	glUniformMatrix4fv(uniformProjection0, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformView0, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformCameraUp, camera.getCameraUp().x, camera.getCameraUp().y, camera.getCameraUp().z);
-	glUniform3f(uniformCameraRight, camera.getCameraRight().x, camera.getCameraRight().y, camera.getCameraRight().z);
+	glUniform3f(uniformCameraUp, camera->getCameraUp().x, camera->getCameraUp().y, camera->getCameraUp().z);
+	glUniform3f(uniformCameraRight, camera->getCameraRight().x, camera->getCameraRight().y, camera->getCameraRight().z);
 
-	billboardShader.SetTexture(1);
+	billboardShader->SetTexture(1);
 
-	billboardShader.Validate();
+	billboardShader->Validate();
 
 	RenderBillboardScene();
 
-	particleShader.UseShader();
+	particleShader->UseShader();
 
-	uniformProjectionParticles = particleShader.GetProjectionLocation();
-	uniformViewParticles = particleShader.GetViewLocation();
-	uniformCameraUpParticles = particleShader.GetCameraUpLocation();
-	uniformCameraRightParticles = particleShader.GetCameraRightLocation();
+	uniformProjectionParticles = particleShader->GetProjectionLocation();
+	uniformViewParticles = particleShader->GetViewLocation();
+	uniformCameraUpParticles = particleShader->GetCameraUpLocation();
+	uniformCameraRightParticles = particleShader->GetCameraRightLocation();
 
 	glUniformMatrix4fv(uniformProjectionParticles, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	glUniformMatrix4fv(uniformViewParticles, 1, GL_FALSE, glm::value_ptr(viewMatrix));
-	glUniform3f(uniformCameraUpParticles, camera.getCameraUp().x, camera.getCameraUp().y, camera.getCameraUp().z);
-	glUniform3f(uniformCameraRightParticles, camera.getCameraRight().x, camera.getCameraRight().y, camera.getCameraRight().z);
+	glUniform3f(uniformCameraUpParticles, camera->getCameraUp().x, camera->getCameraUp().y, camera->getCameraUp().z);
+	glUniform3f(uniformCameraRightParticles, camera->getCameraRight().x, camera->getCameraRight().y, camera->getCameraRight().z);
 
-	particleShader.SetTexture(1);
+	particleShader->SetTexture(1);
 
-	particleShader.Validate();
+	particleShader->Validate();
 
 	RenderParticlesScene(deltaTime);
 
-	glm::vec3 lowerLight = camera.getCameraPosition();
+	glm::vec3 lowerLight = camera->getCameraPosition();
 	lowerLight.y -= 0.1f;
-	spotLights[0]->SetFlash(lowerLight, camera.getCameraDirection());
+	spotLights[0]->SetFlash(lowerLight, camera->getCameraDirection());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -1359,14 +1359,14 @@ void Game::BlurPass()
 {
 	bool horizontal = true;
 	int amount = 10;
-	blurShader.UseShader();
+	blurShader->UseShader();
 	for (int i = 0; i < amount; i++)
 	{
 		blur->Write(horizontal);
-		uniformHorizontal = blurShader.GetHorizontalLocation();
+		uniformHorizontal = blurShader->GetHorizontalLocation();
 		glUniform1i(uniformHorizontal, horizontal);
-		blurShader.Validate();
-		blurShader.SetTexture(1);
+		blurShader->Validate();
+		blurShader->SetTexture(1);
 		if (i < 1)
 		{
 			blur->ReadFirstIteration(hdr->GetColorBuffer(1));
@@ -1387,16 +1387,16 @@ void Game::MotionBlurPass(float fps)
 
 	motionBlur->Write();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	motionBlurShader.UseShader();
+	motionBlurShader->UseShader();
 
-	uniformVelocityScale = motionBlurShader.GetVelocityScaleLocation();
+	uniformVelocityScale = motionBlurShader->GetVelocityScaleLocation();
 	glUniform1f(uniformVelocityScale, fps/30.0f);
 
 	hdr->ReadScene(GL_TEXTURE1);
-	motionBlurShader.SetTexture(1);
+	motionBlurShader->SetTexture(1);
 
 	hdr->ReadMotion(GL_TEXTURE2);
-	motionBlurShader.SetMotionTexture(2);
+	motionBlurShader->SetMotionTexture(2);
 	quad->RenderQuad();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -1405,10 +1405,10 @@ void Game::BloomPass()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-	hdrShader.UseShader();
-	uniformHDR = hdrShader.GetHDRLocation();
-	uniformExposure = hdrShader.GetExposureLocation();
-	uniformBlur = hdrShader.GetBlurLocation();
+	hdrShader->UseShader();
+	uniformHDR = hdrShader->GetHDRLocation();
+	uniformExposure = hdrShader->GetExposureLocation();
+	uniformBlur = hdrShader->GetBlurLocation();
 
 	glUniform1i(uniformHDR, 1);
 	glUniform1f(uniformExposure, 1.0f);
@@ -1417,16 +1417,16 @@ void Game::BloomPass()
 	glUniform1i(uniformBlur, 1.0f);
 	
 	motionBlur->Read(GL_TEXTURE2);
-	hdrShader.SetTexture(2);
+	hdrShader->SetTexture(2);
 
-	hdrShader.Validate();
+	hdrShader->Validate();
 
 	quad->RenderQuad();
 }
 
 Game::~Game()
 {
-	for (auto a : meshList) {
+	/*for (auto a : meshList) {
 		delete a;
 		a = nullptr;
 	}
@@ -1509,5 +1509,5 @@ Game::~Game()
 	if (skybox != nullptr) {
 		delete skybox;
 		skybox = nullptr;
-	}
+	}*/
 }

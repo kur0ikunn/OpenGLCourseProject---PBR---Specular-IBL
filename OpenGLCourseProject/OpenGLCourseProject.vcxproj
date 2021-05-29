@@ -31,6 +31,7 @@
     <ClCompile Include="Equirectangular_to_CubeMap_Framebuffer.cpp" />
     <ClCompile Include="Equirectangular_to_CubeMap_Shader.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
+    <ClCompile Include="GameObjectClass.cpp" />
     <ClCompile Include="HDR_Framebuffer.cpp" />
     <ClCompile Include="HDR_Shader.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="Equirectangular_to_CubeMap_Framebuffer.h" />
     <ClInclude Include="Equirectangular_to_CubeMap_Shader.h" />
     <ClInclude Include="Framebuffer.h" />
+    <ClInclude Include="GameObjectClass.h" />
     <ClInclude Include="HDR_Framebuffer.h" />
     <ClInclude Include="HDR_Shader.h" />
     <ClInclude Include="InputManager.h" />
